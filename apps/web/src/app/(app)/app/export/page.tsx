@@ -19,8 +19,8 @@ import { buildQueryString } from "@/lib/utils";
 export default function ExportPage() {
   const [dateFrom,   setDateFrom]   = useState("");
   const [dateTo,     setDateTo]     = useState("");
-  const [status,     setStatus]     = useState("");
-  const [categoryId, setCategoryId] = useState("");
+  const [status,     setStatus]     = useState("all");
+  const [categoryId, setCategoryId] = useState("all");
 
   const { data: categories = [] } = useCategories();
 
@@ -28,8 +28,8 @@ export default function ExportPage() {
     const params: Record<string, string> = {};
     if (dateFrom)   params.dateFrom   = dateFrom;
     if (dateTo)     params.dateTo     = dateTo;
-    if (status)     params.status     = status;
-    if (categoryId) params.categoryId = categoryId;
+    if (status !== "all")     params.status     = status;
+    if (categoryId !== "all") params.categoryId = categoryId;
 
     const qs = buildQueryString(params);
     window.location.href = `/v1/export${qs}`;
@@ -86,7 +86,7 @@ export default function ExportPage() {
                 <SelectValue placeholder="All statuses" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All statuses</SelectItem>
+                <SelectItem value="all">All statuses</SelectItem>
                 <SelectItem value="review">Needs review</SelectItem>
                 <SelectItem value="reviewed">Reviewed</SelectItem>
                 <SelectItem value="exported">Previously exported</SelectItem>
@@ -102,7 +102,7 @@ export default function ExportPage() {
                 <SelectValue placeholder="All categories" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All categories</SelectItem>
+                <SelectItem value="all">All categories</SelectItem>
                 {categories.map((cat) => (
                   <SelectItem key={cat.id} value={cat.id}>
                     {cat.name}

@@ -47,12 +47,12 @@ import type { InvoiceStatus } from "@resitly/types";
 export default function InvoicesPage() {
   const router = useRouter();
   const [vendor, setVendor]   = useState("");
-  const [status, setStatus]   = useState<InvoiceStatus | "">("");
+  const [status, setStatus]   = useState<InvoiceStatus | "all">("all");
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const { data, isLoading } = useInvoices({
     vendor: vendor || undefined,
-    status: (status as InvoiceStatus) || undefined,
+    status: status === "all" ? undefined : status,
     limit:  50,
   });
 
@@ -91,14 +91,14 @@ export default function InvoicesPage() {
         </div>
         <Select
           value={status}
-          onValueChange={(v) => setStatus(v as InvoiceStatus | "")}
+          onValueChange={(v) => setStatus(v as InvoiceStatus | "all")}
         >
           <SelectTrigger className="w-40">
             <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
             <SelectValue placeholder="All statuses" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All statuses</SelectItem>
+            <SelectItem value="all">All statuses</SelectItem>
             <SelectItem value="pending">Pending</SelectItem>
             <SelectItem value="review">Review</SelectItem>
             <SelectItem value="reviewed">Reviewed</SelectItem>
