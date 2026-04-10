@@ -163,7 +163,7 @@ Always output dates as YYYY-MM-DD (ISO format).
 // ── Model factory ─────────────────────────────────────────────
 function getModel() {
   return genAI.getGenerativeModel({
-    model: "gemini-2.5-flash",
+    model: "gemini-2.5-flash-lite",
     generationConfig: {
       responseMimeType: "application/json",
       responseSchema: extractionSchema,
@@ -221,10 +221,21 @@ export async function extractFromFile(
   try {
     const parsed = JSON.parse(text) as ExtractionResult;
 
+    // Strip trailing % from numeric string fields (AI sometimes returns "6.25%")
+    const stripPercent = (v: string | null | undefined) =>
+      v ? v.replace(/%$/, "").trim() : v ?? null;
+
+    parsed.taxRate = stripPercent(parsed.taxRate);
+    parsed.subtotal = stripPercent(parsed.subtotal);
+    parsed.taxAmount = stripPercent(parsed.taxAmount);
+    parsed.total = stripPercent(parsed.total);
+
     // Normalize line item quantities
     parsed.lineItems = parsed.lineItems.map((item) => ({
       ...item,
       quantity: item.quantity ?? "1",
+      unitPrice: stripPercent(item.unitPrice),
+      amount: stripPercent(item.amount) ?? item.amount,
     }));
 
     return parsed;
