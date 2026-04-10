@@ -196,16 +196,22 @@ export async function extractFromFile(
       "Extract all invoice/receipt data from this file. Follow the schema exactly.",
     ]);
   } catch (err: unknown) {
-    if (
-      err instanceof Error &&
-      "status" in err &&
-      (err as { status: number }).status === 429
-    ) {
-      throw new AppError(
-        "AI extraction quota exceeded. Please try again in a few minutes.",
-        503,
-        "AI_QUOTA_EXCEEDED",
-      );
+    if (err instanceof Error && "status" in err) {
+      const status = (err as { status: number }).status;
+      if (status === 429) {
+        throw new AppError(
+          "AI extraction quota exceeded. Please try again in a few minutes.",
+          503,
+          "AI_QUOTA_EXCEEDED",
+        );
+      }
+      if (status === 503) {
+        throw new AppError(
+          "AI service is temporarily unavailable due to high demand. Please try again in a moment.",
+          503,
+          "AI_SERVICE_UNAVAILABLE",
+        );
+      }
     }
     throw err;
   }
