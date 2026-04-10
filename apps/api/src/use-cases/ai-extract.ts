@@ -4,25 +4,26 @@ import {
   type Schema,
 } from "@google/generative-ai";
 import { env } from "../lib/env.ts";
+import { AppError } from "../lib/errors.ts";
 
 const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
 
 // ── Extraction result type ────────────────────────────────────
 export interface ExtractionResult {
-  vendor:      string | null;
-  invoiceDate: string | null;  // ISO "YYYY-MM-DD"
-  invoiceNo:   string | null;
-  currency:    string;          // always "MYR" for Malaysian receipts
-  subtotal:    string | null;
-  taxType:     "SST_SERVICE" | "SST_SALES" | "GST" | "NONE" | null;
-  taxRate:     string | null;  // "6.00", "8.00"
-  taxAmount:   string | null;
-  total:       string | null;
+  vendor: string | null;
+  invoiceDate: string | null; // ISO "YYYY-MM-DD"
+  invoiceNo: string | null;
+  currency: string; // always "MYR" for Malaysian receipts
+  subtotal: string | null;
+  taxType: "SST_SERVICE" | "SST_SALES" | "GST" | "NONE" | null;
+  taxRate: string | null; // "6.00", "8.00"
+  taxAmount: string | null;
+  total: string | null;
   lineItems: Array<{
-    description:       string;
-    quantity:          string;
-    unitPrice:         string | null;
-    amount:            string;
+    description: string;
+    quantity: string;
+    unitPrice: string | null;
+    amount: string;
     suggestedCategory: string; // category slug
   }>;
   confidence: number; // 0.0–1.0
@@ -32,11 +33,31 @@ export interface ExtractionResult {
 const extractionSchema: Schema = {
   type: SchemaType.OBJECT,
   properties: {
-    vendor:      { type: SchemaType.STRING,  nullable: true, description: "Vendor/merchant name" },
-    invoiceDate: { type: SchemaType.STRING,  nullable: true, description: "Invoice date as YYYY-MM-DD" },
-    invoiceNo:   { type: SchemaType.STRING,  nullable: true, description: "Invoice or receipt number" },
-    currency:    { type: SchemaType.STRING,  nullable: false, description: "Currency code, almost always MYR" },
-    subtotal:    { type: SchemaType.STRING,  nullable: true, description: "Amount before tax, no currency symbol" },
+    vendor: {
+      type: SchemaType.STRING,
+      nullable: true,
+      description: "Vendor/merchant name",
+    },
+    invoiceDate: {
+      type: SchemaType.STRING,
+      nullable: true,
+      description: "Invoice date as YYYY-MM-DD",
+    },
+    invoiceNo: {
+      type: SchemaType.STRING,
+      nullable: true,
+      description: "Invoice or receipt number",
+    },
+    currency: {
+      type: SchemaType.STRING,
+      nullable: false,
+      description: "Currency code, almost always MYR",
+    },
+    subtotal: {
+      type: SchemaType.STRING,
+      nullable: true,
+      description: "Amount before tax, no currency symbol",
+    },
     taxType: {
       type: SchemaType.STRING,
       nullable: true,
@@ -44,9 +65,21 @@ const extractionSchema: Schema = {
       enum: ["SST_SERVICE", "SST_SALES", "GST", "NONE"],
       description: "Type of Malaysian tax applied",
     },
-    taxRate:   { type: SchemaType.STRING, nullable: true, description: "Tax rate as percentage e.g. '6.00'" },
-    taxAmount: { type: SchemaType.STRING, nullable: true, description: "Tax amount, no currency symbol" },
-    total:     { type: SchemaType.STRING, nullable: true, description: "Total amount payable, no currency symbol" },
+    taxRate: {
+      type: SchemaType.STRING,
+      nullable: true,
+      description: "Tax rate as percentage e.g. '6.00'",
+    },
+    taxAmount: {
+      type: SchemaType.STRING,
+      nullable: true,
+      description: "Tax amount, no currency symbol",
+    },
+    total: {
+      type: SchemaType.STRING,
+      nullable: true,
+      description: "Total amount payable, no currency symbol",
+    },
     confidence: {
       type: SchemaType.NUMBER,
       nullable: false,
@@ -57,10 +90,14 @@ const extractionSchema: Schema = {
       items: {
         type: SchemaType.OBJECT,
         properties: {
-          description:       { type: SchemaType.STRING, nullable: false },
-          quantity:          { type: SchemaType.STRING, nullable: true,  description: "Quantity, default '1'" },
-          unitPrice:         { type: SchemaType.STRING, nullable: true },
-          amount:            { type: SchemaType.STRING, nullable: false },
+          description: { type: SchemaType.STRING, nullable: false },
+          quantity: {
+            type: SchemaType.STRING,
+            nullable: true,
+            description: "Quantity, default '1'",
+          },
+          unitPrice: { type: SchemaType.STRING, nullable: true },
+          amount: { type: SchemaType.STRING, nullable: false },
           suggestedCategory: {
             type: SchemaType.STRING,
             nullable: false,
@@ -126,10 +163,10 @@ Always output dates as YYYY-MM-DD (ISO format).
 // ── Model factory ─────────────────────────────────────────────
 function getModel() {
   return genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
+    model: "gemini-2.5-flash",
     generationConfig: {
       responseMimeType: "application/json",
-      responseSchema:   extractionSchema,
+      responseSchema: extractionSchema,
     },
     systemInstruction: SYSTEM_PROMPT,
   });
@@ -143,19 +180,35 @@ function getModel() {
  */
 export async function extractFromFile(
   fileBuffer: Buffer,
-  mimeType: string
+  mimeType: string,
 ): Promise<ExtractionResult> {
   const model = getModel();
 
-  const result = await model.generateContent([
-    {
-      inlineData: {
-        data:     fileBuffer.toString("base64"),
-        mimeType,
+  let result;
+  try {
+    result = await model.generateContent([
+      {
+        inlineData: {
+          data: fileBuffer.toString("base64"),
+          mimeType,
+        },
       },
-    },
-    "Extract all invoice/receipt data from this file. Follow the schema exactly.",
-  ]);
+      "Extract all invoice/receipt data from this file. Follow the schema exactly.",
+    ]);
+  } catch (err: unknown) {
+    if (
+      err instanceof Error &&
+      "status" in err &&
+      (err as { status: number }).status === 429
+    ) {
+      throw new AppError(
+        "AI extraction quota exceeded. Please try again in a few minutes.",
+        503,
+        "AI_QUOTA_EXCEEDED",
+      );
+    }
+    throw err;
+  }
 
   const text = result.response.text();
 
