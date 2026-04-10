@@ -3,12 +3,14 @@
 import { useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Loader2, AlertCircle, CheckCircle } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useInvoiceProcessingPoll } from "@/hooks/use-api";
 import { Button } from "@/components/ui/button";
 
 export default function ProcessingPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
+  const qc = useQueryClient();
   const { data: invoice, isLoading } = useInvoiceProcessingPoll(id);
 
   useEffect(() => {
@@ -16,9 +18,15 @@ export default function ProcessingPage() {
 
     // Redirect to review page when extraction completes
     if (invoice.status === "review" || invoice.status === "reviewed") {
+      void qc.invalidateQueries({ queryKey: ["invoices"] });
       router.replace(`/app/invoices/${id}`);
     }
-  }, [invoice, id, router]);
+
+    // Invalidate list when extraction fails so it reflects the reverted status
+    if (invoice.status === "pending") {
+      void qc.invalidateQueries({ queryKey: ["invoices"] });
+    }
+  }, [invoice, id, router, qc]);
 
   if (isLoading || !invoice) {
     return <ProcessingView status="extracting" />;

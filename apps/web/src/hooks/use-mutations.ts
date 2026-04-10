@@ -65,6 +65,7 @@ export function useExtractInvoice(id: string) {
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["invoices", id] });
       void qc.invalidateQueries({ queryKey: ["invoices", id, "poll"] });
+      void qc.invalidateQueries({ queryKey: ["invoices"] });
     },
     onError: (err) => {
       toast.error(err.message ?? "Extraction failed. Please try again.");
