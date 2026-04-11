@@ -30,6 +30,7 @@ export function Topbar() {
       style={{
         background: "var(--background)",
         borderBottom: "1px solid rgba(255,255,255,0.05)",
+        borderRadius: "12px",
       }}
     >
       <SidebarTrigger className="mr-2 hidden md:flex" />
