@@ -1,61 +1,32 @@
 import { cn } from "@/lib/utils";
 import type { InvoiceStatus } from "@resitly/types";
+import {
+  Circle,
+  CircleCheck,
+  CircleDashed,
+  CircleX,
+  Loader,
+} from "lucide-react";
 
 const statusConfig: Record<
   InvoiceStatus,
-  { label: string; style: React.CSSProperties }
+  { label: string; color: string; Icon: React.ElementType }
 > = {
-  pending: {
-    label: "Pending",
-    style: {
-      background: "rgba(98,102,109,0.12)",
-      color: "#8a8f98",
-      border: "1px solid rgba(98,102,109,0.2)",
-    },
-  },
-  extracting: {
-    label: "Extracting",
-    style: {
-      background: "rgba(94,106,210,0.12)",
-      color: "#828fff",
-      border: "1px solid rgba(94,106,210,0.25)",
-    },
-  },
-  review: {
-    label: "Review",
-    style: {
-      background: "rgba(245,158,11,0.12)",
-      color: "#f59e0b",
-      border: "1px solid rgba(245,158,11,0.2)",
-    },
-  },
-  reviewed: {
-    label: "Reviewed",
-    style: {
-      background: "rgba(39,166,68,0.12)",
-      color: "#27a644",
-      border: "1px solid rgba(39,166,68,0.2)",
-    },
-  },
-  exported: {
-    label: "Exported",
-    style: {
-      background: "rgba(113,112,255,0.12)",
-      color: "#7170ff",
-      border: "1px solid rgba(113,112,255,0.2)",
-    },
-  },
+  pending: { label: "Pending", color: "#8a8f98", Icon: CircleDashed },
+  extracting: { label: "Extracting", color: "#828fff", Icon: Loader },
+  review: { label: "Review", color: "#f59e0b", Icon: Circle },
+  reviewed: { label: "Reviewed", color: "#27a644", Icon: CircleCheck },
+  exported: { label: "Exported", color: "#7170ff", Icon: CircleX },
 };
 
 export function InvoiceStatusBadge({ status }: { status: InvoiceStatus }) {
-  const { label, style } = statusConfig[status] ?? statusConfig.pending;
+  const { label, color, Icon } = statusConfig[status] ?? statusConfig.pending;
   return (
     <span
-      className={cn(
-        "inline-flex items-center px-2 py-0.5 rounded-full text-[11px]"
-      )}
-      style={{ fontWeight: 510, ...style }}
+      className={cn("inline-flex items-center gap-1.5 text-[11px]")}
+      style={{ color, fontWeight: 510 }}
     >
+      <Icon size={12} strokeWidth={2} style={{ color }} />
       {label}
     </span>
   );
