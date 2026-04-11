@@ -40,16 +40,16 @@
   --radius-xl: calc(var(--radius) + 4px);
 
   /* ── Brand semantic colors ───────────────────────────────── */
-  --color-success: #10B981;
+  --color-success: #27a644;
   --color-warning: #F59E0B;
   --color-error:   #EF4444;
 
   /* ── Invoice status colors ───────────────────────────────── */
-  --color-status-pending:    #6b7280;
-  --color-status-extracting: #3b82f6;
+  --color-status-pending:    #62666d;
+  --color-status-extracting: #5e6ad2;
   --color-status-review:     #f59e0b;
-  --color-status-reviewed:   #10b981;
-  --color-status-exported:   #8b5cf6;
+  --color-status-reviewed:   #27a644;
+  --color-status-exported:   #7170ff;
 
   --font-sans: var(--font-sans);
   --color-chart-5: var(--chart-5);
@@ -63,110 +63,105 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* ─── Light mode ─────────────────────────────────────────────────────────── */
 :root {
-  /* Base */
-  --background: #FFFFFF;
-  --foreground: #0F172A;
+  --background: #f7f8f8;
+  --foreground: #0f1011;
 
-  /* Card / Popover */
-  --card: #FFFFFF;
-  --card-foreground: #0F172A;
-  --popover: #FFFFFF;
-  --popover-foreground: #0F172A;
+  --card: #ffffff;
+  --card-foreground: #0f1011;
+  --popover: #ffffff;
+  --popover-foreground: #0f1011;
 
-  /* Primary — Blue */
-  --primary: #3B82F6;
-  --primary-foreground: #FFFFFF;
+  --primary: #5e6ad2;
+  --primary-foreground: #ffffff;
 
-  /* Secondary / Muted / Accent — Light Gray */
-  --secondary: #F8FAFC;
-  --secondary-foreground: #0F172A;
-  --muted: #F8FAFC;
-  --muted-foreground: #64748B;
-  --accent: #F1F5F9;
-  --accent-foreground: #0F172A;
+  --secondary: #f3f4f5;
+  --secondary-foreground: #0f1011;
+  --muted: #f3f4f5;
+  --muted-foreground: #62666d;
+  --accent: #e6e6e6;
+  --accent-foreground: #0f1011;
 
-  /* Semantic */
   --destructive: #EF4444;
   --destructive-foreground: #FFFFFF;
 
-  /* Borders / Inputs / Ring */
-  --border: #E2E8F0;
-  --input: #E2E8F0;
-  --ring: #3B82F6;
-  --radius: 0.625rem;
+  --border: #d0d6e0;
+  --input: #d0d6e0;
+  --ring: #7170ff;
+  --radius: 0.5rem;
 
-  /* Sidebar — light mode */
-  --sidebar: #F8FAFC;
-  --sidebar-foreground: #0F172A;
-  --sidebar-primary: #3B82F6;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #EFF6FF;
-  --sidebar-accent-foreground: #1E40AF;
-  --sidebar-border: #E2E8F0;
-  --sidebar-ring: #3B82F6;
+  --sidebar: #f3f4f5;
+  --sidebar-foreground: #0f1011;
+  --sidebar-primary: #5e6ad2;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgba(94, 106, 210, 0.08);
+  --sidebar-accent-foreground: #5e6ad2;
+  --sidebar-border: #d0d6e0;
+  --sidebar-ring: #7170ff;
 
-  /* Charts — brand palette */
-  --chart-1: #3B82F6;
-  --chart-2: #10B981;
+  --chart-1: #5e6ad2;
+  --chart-2: #27a644;
   --chart-3: #F59E0B;
-  --chart-4: #8B5CF6;
+  --chart-4: #7170ff;
   --chart-5: #EF4444;
 }
 
+/* ─── Dark mode (Linear-native) ──────────────────────────────────────────── */
 .dark {
-  /* Base */
-  --background: #0F172A;
-  --foreground: #F8FAFC;
+  /* Deepest canvas — panel dark */
+  --background: #0f1011;
+  --foreground: #f7f8f8;
 
-  /* Card / Popover */
-  --card: #1E293B;
-  --card-foreground: #F8FAFC;
-  --popover: #1E293B;
-  --popover-foreground: #F8FAFC;
+  /* Cards — elevated surface */
+  --card: #191a1b;
+  --card-foreground: #f7f8f8;
+  --popover: #191a1b;
+  --popover-foreground: #f7f8f8;
 
-  /* Primary — Blue (unchanged in dark) */
-  --primary: #3B82F6;
-  --primary-foreground: #FFFFFF;
+  /* Primary — Brand Indigo */
+  --primary: #5e6ad2;
+  --primary-foreground: #ffffff;
 
   /* Secondary / Muted / Accent */
-  --secondary: #1E293B;
-  --secondary-foreground: #F8FAFC;
-  --muted: #1E293B;
-  --muted-foreground: #94A3B8;
-  --accent: #1E293B;
-  --accent-foreground: #F8FAFC;
+  --secondary: #28282c;
+  --secondary-foreground: #d0d6e0;
+  --muted: #191a1b;
+  --muted-foreground: #8a8f98;
+  --accent: rgba(255, 255, 255, 0.05);
+  --accent-foreground: #f7f8f8;
 
   /* Semantic */
   --destructive: #EF4444;
   --destructive-foreground: #FFFFFF;
 
   /* Borders / Inputs / Ring */
-  --border: rgba(255, 255, 255, 0.1);
-  --input: rgba(255, 255, 255, 0.12);
-  --ring: #3B82F6;
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.08);
+  --ring: #7170ff;
 
-  /* Sidebar — deeper Navy in dark mode */
-  --sidebar: #0B1120;
-  --sidebar-foreground: #F8FAFC;
-  --sidebar-primary: #3B82F6;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #1E293B;
-  --sidebar-accent-foreground: #F8FAFC;
-  --sidebar-border: #1E293B;
-  --sidebar-ring: #3B82F6;
+  /* Sidebar — panel dark */
+  --sidebar: #0f1011;
+  --sidebar-foreground: #d0d6e0;
+  --sidebar-primary: #7170ff;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgba(255, 255, 255, 0.05);
+  --sidebar-accent-foreground: #f7f8f8;
+  --sidebar-border: rgba(255, 255, 255, 0.05);
+  --sidebar-ring: #7170ff;
 
   /* Charts */
-  --chart-1: #3B82F6;
-  --chart-2: #10B981;
+  --chart-1: #7170ff;
+  --chart-2: #27a644;
   --chart-3: #F59E0B;
-  --chart-4: #8B5CF6;
+  --chart-4: #828fff;
   --chart-5: #EF4444;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    font-feature-settings: "cv01", "ss03";
   }
   body {
     @apply bg-background text-foreground antialiased;
@@ -174,11 +169,14 @@
   html {
     @apply font-sans;
   }
-  /* Design system card shadow */
+
+  /* Linear-style card elevation */
   .card-shadow {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 0px 1px;
   }
-  .card-shadow:hover {
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  .dark .card-shadow {
+    box-shadow:
+      rgba(0, 0, 0, 0.2) 0px 0px 0px 1px,
+      rgba(0, 0, 0, 0.08) 0px 0px 1px;
   }
 }

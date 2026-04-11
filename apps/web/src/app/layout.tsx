@@ -6,7 +6,11 @@ import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  axes: ["opsz"],
+});
 
 export const metadata: Metadata = {
   title: {
@@ -29,7 +33,7 @@ export default function RootLayout({
       className={cn(inter.variable, "font-sans")}
     >
       <body className="antialiased">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <QueryProvider>
             {children}
             <Toaster />
