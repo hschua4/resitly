@@ -5,6 +5,7 @@ import { LogOut, Moon, Sun, Upload } from "lucide-react";
 import { useTheme } from "next-themes";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,6 +32,8 @@ export function Topbar() {
         borderBottom: "1px solid rgba(255,255,255,0.05)",
       }}
     >
+      <SidebarTrigger className="mr-2 hidden md:flex" />
+
       {/* Mobile brand */}
       <span
         className="text-[15px] md:hidden"
