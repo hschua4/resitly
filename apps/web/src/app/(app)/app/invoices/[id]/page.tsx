@@ -187,6 +187,20 @@ export default function InvoiceReviewPage() {
     );
   }
 
+  if (invoice.status === "extracting") {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        <div>
+          <p className="font-medium">Extracting invoice data</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            AI is processing your invoice. This usually takes 5–15 seconds.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   const confidence = invoice.aiConfidence ? parseFloat(invoice.aiConfidence) : null;
   const confidenceColor =
     confidence === null ? "" :
@@ -226,7 +240,11 @@ export default function InvoiceReviewPage() {
               onClick={onReExtract}
               disabled={extractInvoice.isPending}
             >
-              <RotateCcw className="h-4 w-4 mr-2" />
+              {extractInvoice.isPending ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <RotateCcw className="h-4 w-4 mr-2" />
+              )}
               Re-extract
             </Button>
           )}
