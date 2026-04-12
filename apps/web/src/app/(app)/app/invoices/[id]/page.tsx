@@ -40,6 +40,7 @@ const lineItemSchema = z.object({
   quantity:    z.string().default("1"),
   unitPrice:   z.string().nullable().optional(),
   amount:      z.string().min(1, "Required"),
+  sortOrder:   z.string().default("0"),
 });
 
 const formSchema = z.object({
@@ -104,13 +105,14 @@ export default function InvoiceReviewPage() {
       taxAmount:   invoice.taxAmount ?? "",
       total:       invoice.total ?? "",
       notes:       invoice.notes ?? "",
-      lineItems:   (invoice.lineItems ?? []).map((li) => ({
+      lineItems:   (invoice.lineItems ?? []).map((li, i) => ({
         id:          li.id,
         categoryId:  li.categoryId ?? null,
         description: li.description,
         quantity:    li.quantity ?? "1",
         unitPrice:   li.unitPrice ?? null,
         amount:      li.amount,
+        sortOrder:   li.sortOrder ?? String(i),
       })),
     });
   }, [invoice, form]);
@@ -211,7 +213,7 @@ export default function InvoiceReviewPage() {
   const isPdf = invoice.fileType === "application/pdf";
 
   return (
-    <div className="space-y-6 max-w-5xl">
+    <div className="space-y-6 max-w-5xl mx-auto">
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -399,6 +401,7 @@ export default function InvoiceReviewPage() {
                 unitPrice:   null,
                 amount:      "",
                 categoryId:  null,
+                sortOrder:   String(fields.length),
               })
             }
           >
