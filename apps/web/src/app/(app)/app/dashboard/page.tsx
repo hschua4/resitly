@@ -59,7 +59,7 @@ export default function DashboardPage() {
           </p>
         </div>
         <Button asChild>
-          <Link href="/app/invoices/upload">
+          <Link href="/app/upload">
             <Upload className="h-4 w-4 mr-2" />
             Upload Invoice
           </Link>
@@ -232,7 +232,7 @@ export default function DashboardPage() {
               <Receipt className="h-8 w-8 mx-auto opacity-40" />
               <p>No invoices yet.</p>
               <Button asChild variant="outline" size="sm">
-                <Link href="/app/invoices/upload">Upload your first invoice</Link>
+                <Link href="/app/upload">Upload your first invoice</Link>
               </Button>
             </div>
           ) : (

@@ -37,7 +37,7 @@ import {
 const navItems = [
   { label: "Dashboard",  href: "/app/dashboard",       icon: LayoutDashboard },
   { label: "Invoices",   href: "/app/invoices",         icon: Receipt },
-  { label: "Upload",     href: "/app/invoices/upload",  icon: Upload },
+  { label: "Upload",     href: "/app/upload",            icon: Upload },
   { label: "Export",     href: "/app/export",           icon: Download },
   { label: "Settings",   href: "/app/settings",         icon: Settings },
 ];

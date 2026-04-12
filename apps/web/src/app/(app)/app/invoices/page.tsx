@@ -121,7 +121,7 @@ export default function InvoicesPage() {
                   <div className="flex flex-col items-center gap-2">
                     <p>No invoices yet.</p>
                     <Button asChild variant="outline" size="sm">
-                      <Link href="/app/invoices/upload">Upload your first invoice</Link>
+                      <Link href="/app/upload">Upload your first invoice</Link>
                     </Button>
                   </div>
                 </TableCell>
