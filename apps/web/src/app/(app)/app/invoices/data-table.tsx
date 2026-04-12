@@ -7,13 +7,11 @@ import {
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
-  getFilteredRowModel,
   useReactTable,
   type ColumnDef,
   type SortingState,
-  type ColumnFiltersState,
 } from "@tanstack/react-table";
-import { Eye, Trash2, Search, Filter } from "lucide-react";
+import { Eye, Trash2, Search, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -43,61 +41,75 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDeleteInvoice } from "@/hooks/use-mutations";
-import type { Invoice } from "@resitly/types";
+import type { Invoice, InvoiceStatus } from "@resitly/types";
 
 interface DataTableProps {
   columns: ColumnDef<Invoice>[];
   data: Invoice[];
   isLoading: boolean;
+  isFetching: boolean;
+  total: number;
+  page: number;
+  totalPages: number;
+  pageSize: number;
+  onPageChange: (page: number) => void;
+  vendorInput: string;
+  onVendorInputChange: (value: string) => void;
+  status: InvoiceStatus | "all";
+  onStatusChange: (value: InvoiceStatus | "all") => void;
 }
 
-export function InvoicesDataTable({ columns, data, isLoading }: DataTableProps) {
+export function InvoicesDataTable({
+  columns,
+  data,
+  isLoading,
+  isFetching,
+  total,
+  page,
+  totalPages,
+  pageSize,
+  onPageChange,
+  vendorInput,
+  onVendorInputChange,
+  status,
+  onStatusChange,
+}: DataTableProps) {
   const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([
     { id: "invoiceDate", desc: true },
   ]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [vendorFilter, setVendorFilter] = useState("");
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const deleteInvoice = useDeleteInvoice();
 
   const table = useReactTable({
     data,
     columns,
-    state: { sorting, columnFilters },
+    state: { sorting },
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
+    manualFiltering: true,
+    manualPagination: true,
+    pageCount: totalPages,
   });
 
-  function handleVendorChange(value: string) {
-    setVendorFilter(value);
-    table.getColumn("vendor")?.setFilterValue(value || undefined);
-  }
-
-  function handleStatusChange(value: string) {
-    table.getColumn("status")?.setFilterValue(value);
-  }
-
-  const statusFilterValue =
-    (table.getColumn("status")?.getFilterValue() as string) ?? "all";
+  const start = total === 0 ? 0 : (page - 1) * pageSize + 1;
+  const end = Math.min(page * pageSize, total);
 
   return (
     <div className="flex flex-col gap-4">
       {/* Filters */}
       <div className="flex gap-3 flex-wrap">
-        <div className="relative flex-1 min-w-[180px] max-w-xs">
+        <div className="relative flex-1 min-w-45 max-w-xs">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input
             placeholder="Search vendor..."
             className="pl-9"
-            value={vendorFilter}
-            onChange={(e) => handleVendorChange(e.target.value)}
+            value={vendorInput}
+            onChange={(e) => onVendorInputChange(e.target.value)}
           />
         </div>
-        <Select value={statusFilterValue} onValueChange={handleStatusChange}>
+        <Select value={status} onValueChange={onStatusChange}>
           <SelectTrigger className="w-40">
             <Filter className="size-4 text-muted-foreground" />
             <SelectValue placeholder="All statuses" />
@@ -113,7 +125,7 @@ export function InvoicesDataTable({ columns, data, isLoading }: DataTableProps) 
       </div>
 
       {/* Table */}
-      <div className="border rounded-lg overflow-hidden">
+      <div className={`border rounded-lg overflow-hidden transition-opacity duration-150 ${isFetching && !isLoading ? "opacity-60" : ""}`}>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -174,12 +186,7 @@ export function InvoicesDataTable({ columns, data, isLoading }: DataTableProps) 
                       className="flex gap-1"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="size-8"
-                        asChild
-                      >
+                      <Button variant="ghost" size="icon" className="size-8" asChild>
                         <Link href={`/app/invoices/${row.original.id}`}>
                           <Eye data-icon />
                         </Link>
@@ -199,6 +206,36 @@ export function InvoicesDataTable({ columns, data, isLoading }: DataTableProps) 
             )}
           </TableBody>
         </Table>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">
+          {total === 0 ? "No results" : `${start}–${end} of ${total} invoice${total !== 1 ? "s" : ""}`}
+        </p>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onPageChange(page - 1)}
+            disabled={page <= 1 || isFetching}
+          >
+            <ChevronLeft data-icon="inline-start" />
+            Previous
+          </Button>
+          <span className="text-sm text-muted-foreground tabular-nums">
+            {page} / {totalPages}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onPageChange(page + 1)}
+            disabled={page >= totalPages || isFetching}
+          >
+            Next
+            <ChevronRight data-icon="inline-end" />
+          </Button>
+        </div>
       </div>
 
       {/* Delete confirmation */}

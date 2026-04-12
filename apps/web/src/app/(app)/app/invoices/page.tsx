@@ -1,12 +1,53 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useInvoices } from "@/hooks/use-api";
 import { columns } from "./columns";
 import { InvoicesDataTable } from "./data-table";
+import type { InvoiceStatus } from "@resitly/types";
+
+const PAGE_SIZE = 20;
 
 export default function InvoicesPage() {
-  const { data, isLoading } = useInvoices({ limit: 200 });
-  const invoices = data?.data ?? [];
+  const [vendorInput, setVendorInput] = useState("");
+  const [vendor, setVendor] = useState("");
+  const [status, setStatus] = useState<InvoiceStatus | "all">("all");
+  const [page, setPage] = useState(1);
 
-  return <InvoicesDataTable columns={columns} data={invoices} isLoading={isLoading} />;
+  // Debounce vendor input → reset to page 1 on change
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setVendor(vendorInput);
+      setPage(1);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [vendorInput]);
+
+  const { data, isLoading, isFetching } = useInvoices({
+    vendor: vendor || undefined,
+    status: status === "all" ? undefined : status,
+    page,
+    limit: PAGE_SIZE,
+  });
+
+  return (
+    <InvoicesDataTable
+      columns={columns}
+      data={data?.data ?? []}
+      isLoading={isLoading}
+      isFetching={isFetching}
+      total={data?.total ?? 0}
+      page={page}
+      totalPages={data?.totalPages ?? 1}
+      pageSize={PAGE_SIZE}
+      onPageChange={setPage}
+      vendorInput={vendorInput}
+      onVendorInputChange={setVendorInput}
+      status={status}
+      onStatusChange={(v: InvoiceStatus | "all") => {
+        setStatus(v);
+        setPage(1);
+      }}
+    />
+  );
 }
