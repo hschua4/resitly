@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import {
   Eye,
   Trash2,
-  Upload,
   Search,
   Filter,
 } from "lucide-react";
@@ -62,22 +61,6 @@ export default function InvoicesPage() {
 
   return (
     <div className="space-y-5">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Invoices</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            {data?.total ?? 0} total invoices
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/app/invoices/upload">
-            <Upload className="h-4 w-4 mr-2" />
-            Upload Invoice
-          </Link>
-        </Button>
-      </div>
-
       {/* Filters */}
       <div className="flex gap-3 flex-wrap">
         <div className="relative flex-1 min-w-[180px] max-w-xs">
