@@ -10,7 +10,10 @@ import {
   Settings,
   LogOut,
   ChevronsUpDown,
+  Sun,
+  Moon,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 import { authClient } from "@/lib/auth-client";
 import {
   Sidebar,
@@ -43,6 +46,8 @@ export function AppSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { data: session } = authClient.useSession();
+
+  const { theme, setTheme } = useTheme();
 
   const handleSignOut = async () => {
     await authClient.signOut();
@@ -144,6 +149,14 @@ export function AppSidebar() {
                     <Settings />
                     Settings
                   </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="text-[13px]"
+                  style={{ fontWeight: 510 }}
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                >
+                  {theme === "dark" ? <Sun /> : <Moon />}
+                  {theme === "dark" ? "Light mode" : "Dark mode"}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
