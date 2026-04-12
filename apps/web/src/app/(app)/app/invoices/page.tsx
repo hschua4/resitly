@@ -60,7 +60,7 @@ export default function InvoicesPage() {
   const invoices = data?.data ?? [];
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {/* Filters */}
       <div className="flex gap-3 flex-wrap">
         <div className="relative flex-1 min-w-[180px] max-w-xs">

@@ -32,7 +32,7 @@ export function Topbar() {
         />
         <h1 className="text-base font-medium">{title}</h1>
         <div className="ml-auto flex items-center gap-2">
-          <Button asChild size="sm" className="text-xs h-8 px-3">
+          <Button asChild size="sm">
             <Link href="/app/upload">
               <Upload className="h-3.5 w-3.5 mr-1.5" />
               Upload Invoice

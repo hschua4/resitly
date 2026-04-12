@@ -67,12 +67,8 @@ export function AppSidebar() {
     <Sidebar variant="inset">
       <SidebarHeader className="px-4 py-3">
         <span
-          className="text-[15px] tracking-tight"
-          style={{
-            color: "var(--sidebar-primary)",
-            fontWeight: 590,
-            letterSpacing: "-0.165px",
-          }}
+          className="text-[15px] font-semibold text-sidebar-primary"
+          style={{ letterSpacing: "-0.165px" }}
         >
           Resitly
         </span>
@@ -112,23 +108,15 @@ export function AppSidebar() {
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
                   <div
-                    className="size-8 rounded-full flex items-center justify-center text-[11px] shrink-0"
-                    style={{
-                      background: "rgba(94,106,210,0.2)",
-                      color: "var(--primary)",
-                      fontWeight: 590,
-                    }}
+                    className="size-8 rounded-full flex items-center justify-center text-[11px] font-semibold shrink-0 bg-primary/20 text-primary"
                   >
                     {initials}
                   </div>
                   <div className="flex flex-col gap-0.5 leading-none min-w-0">
-                    <span className="truncate text-[13px]" style={{ fontWeight: 510 }}>
+                    <span className="truncate text-[13px] font-medium">
                       {userName}
                     </span>
-                    <span
-                      className="truncate text-[11px]"
-                      style={{ color: "var(--muted-foreground)", fontWeight: 400 }}
-                    >
+                    <span className="truncate text-[11px] text-muted-foreground">
                       {userEmail}
                     </span>
                   </div>
@@ -138,21 +126,16 @@ export function AppSidebar() {
               <DropdownMenuContent
                 side="top"
                 align="start"
-                className="w-[--radix-popper-anchor-width]"
-                style={{
-                  background: "var(--card)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                }}
+                className="w-[--radix-popper-anchor-width] bg-card border-white/8"
               >
                 <DropdownMenuItem asChild>
-                  <Link href="/app/settings" className="text-[13px]" style={{ fontWeight: 510 }}>
+                  <Link href="/app/settings" className="text-[13px] font-medium">
                     <Settings />
                     Settings
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className="text-[13px]"
-                  style={{ fontWeight: 510 }}
+                  className="text-[13px] font-medium"
                   onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                 >
                   {theme === "dark" ? <Sun /> : <Moon />}
@@ -160,8 +143,7 @@ export function AppSidebar() {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  className="text-destructive focus:text-destructive text-[13px]"
-                  style={{ fontWeight: 510 }}
+                  className="text-destructive focus:text-destructive text-[13px] font-medium"
                   onClick={handleSignOut}
                 >
                   <LogOut />

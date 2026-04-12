@@ -320,27 +320,27 @@ export default function InvoiceReviewPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <Label className="text-xs">Vendor</Label>
                 <Input {...form.register("vendor")} placeholder="e.g. TNB, Grab" />
               </div>
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <Label className="text-xs">Invoice No.</Label>
                 <Input {...form.register("invoiceNo")} placeholder="INV-001" />
               </div>
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <Label className="text-xs">Date</Label>
                 <Input type="date" {...form.register("invoiceDate")} />
               </div>
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <Label className="text-xs">Currency</Label>
                 <Input {...form.register("currency")} placeholder="MYR" />
               </div>
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <Label className="text-xs">Subtotal (RM)</Label>
                 <Input {...form.register("subtotal")} placeholder="0.00" />
               </div>
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <Label className="text-xs">Tax Type</Label>
                 <Select
                   value={form.watch("taxType") ?? ""}
@@ -359,17 +359,17 @@ export default function InvoiceReviewPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <Label className="text-xs">Tax Rate (%)</Label>
                 <Input {...form.register("taxRate")} placeholder="6.00" />
               </div>
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <Label className="text-xs">Tax Amount (RM)</Label>
                 <Input {...form.register("taxAmount")} placeholder="0.00" />
               </div>
             </div>
 
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               <Label className="text-xs font-semibold">Total (RM)</Label>
               <Input
                 {...form.register("total")}
@@ -378,7 +378,7 @@ export default function InvoiceReviewPage() {
               />
             </div>
 
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               <Label className="text-xs">Notes</Label>
               <Input {...form.register("notes")} placeholder="Optional note" />
             </div>
