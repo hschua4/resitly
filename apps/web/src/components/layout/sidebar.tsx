@@ -1,14 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Receipt,
   Upload,
   Download,
   Settings,
+  LogOut,
+  ChevronsUpDown,
 } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 import {
   Sidebar,
   SidebarContent,
@@ -20,6 +23,13 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const navItems = [
   { label: "Dashboard",  href: "/app/dashboard",       icon: LayoutDashboard },
@@ -31,6 +41,22 @@ const navItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { data: session } = authClient.useSession();
+
+  const handleSignOut = async () => {
+    await authClient.signOut();
+    router.push("/sign-in");
+  };
+
+  const userEmail = session?.user?.email ?? "";
+  const userName = session?.user?.name ?? "User";
+  const initials = userName
+    .split(" ")
+    .map((n: string) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
   return (
     <Sidebar variant="inset">
@@ -71,13 +97,67 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="px-4 py-3">
-        <p
-          className="text-[11px]"
-          style={{ color: "var(--muted-foreground)", fontWeight: 510 }}
-        >
-          Resitly v1.0
-        </p>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton
+                  size="lg"
+                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                >
+                  <div
+                    className="size-8 rounded-full flex items-center justify-center text-[11px] shrink-0"
+                    style={{
+                      background: "rgba(94,106,210,0.2)",
+                      color: "var(--primary)",
+                      fontWeight: 590,
+                    }}
+                  >
+                    {initials}
+                  </div>
+                  <div className="flex flex-col gap-0.5 leading-none min-w-0">
+                    <span className="truncate text-[13px]" style={{ fontWeight: 510 }}>
+                      {userName}
+                    </span>
+                    <span
+                      className="truncate text-[11px]"
+                      style={{ color: "var(--muted-foreground)", fontWeight: 400 }}
+                    >
+                      {userEmail}
+                    </span>
+                  </div>
+                  <ChevronsUpDown className="ml-auto shrink-0" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side="top"
+                align="start"
+                className="w-[--radix-popper-anchor-width]"
+                style={{
+                  background: "var(--card)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
+              >
+                <DropdownMenuItem asChild>
+                  <Link href="/app/settings" className="text-[13px]" style={{ fontWeight: 510 }}>
+                    <Settings />
+                    Settings
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="text-destructive focus:text-destructive text-[13px]"
+                  style={{ fontWeight: 510 }}
+                  onClick={handleSignOut}
+                >
+                  <LogOut />
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
   );

@@ -1,28 +1,13 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { LogOut, Moon, Sun, Upload } from "lucide-react";
+import { Moon, Sun, Upload } from "lucide-react";
 import { useTheme } from "next-themes";
-import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 
 export function Topbar() {
-  const router = useRouter();
   const { theme, setTheme } = useTheme();
-
-  const handleSignOut = async () => {
-    await authClient.signOut();
-    router.push("/sign-in");
-  };
 
   return (
     <header
@@ -68,71 +53,22 @@ export function Topbar() {
         </Button>
       </div>
 
-      {/* Right actions */}
-      <div className="flex items-center gap-1 ml-auto">
-        {/* Theme toggle */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 rounded-md"
-          style={{
-            background: "rgba(255,255,255,0.03)",
-            border: "1px solid rgba(255,255,255,0.06)",
-            color: "var(--muted-foreground)",
-          }}
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          aria-label="Toggle theme"
-        >
-          <Sun className="h-3.5 w-3.5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-3.5 w-3.5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-        </Button>
-
-        {/* User menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 rounded-full"
-              style={{ background: "rgba(255,255,255,0.04)" }}
-            >
-              <div
-                className="h-6 w-6 rounded-full flex items-center justify-center text-[11px]"
-                style={{
-                  background: "rgba(94,106,210,0.2)",
-                  color: "var(--primary)",
-                  fontWeight: 590,
-                }}
-              >
-                U
-              </div>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="end"
-            className="w-44"
-            style={{
-              background: "var(--card)",
-              border: "1px solid rgba(255,255,255,0.08)",
-            }}
-          >
-            <DropdownMenuItem asChild>
-              <Link href="/app/settings" className="text-[13px]" style={{ fontWeight: 510 }}>
-                Settings
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="text-destructive focus:text-destructive text-[13px]"
-              style={{ fontWeight: 510 }}
-              onClick={handleSignOut}
-            >
-              <LogOut className="h-3.5 w-3.5 mr-2" />
-              Sign out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      {/* Theme toggle */}
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-8 w-8 rounded-md ml-auto"
+        style={{
+          background: "rgba(255,255,255,0.03)",
+          border: "1px solid rgba(255,255,255,0.06)",
+          color: "var(--muted-foreground)",
+        }}
+        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        aria-label="Toggle theme"
+      >
+        <Sun className="h-3.5 w-3.5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+        <Moon className="absolute h-3.5 w-3.5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      </Button>
     </header>
   );
 }
