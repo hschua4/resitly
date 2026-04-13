@@ -53,6 +53,7 @@ interface DataTableProps {
   totalPages: number;
   pageSize: number;
   onPageChange: (page: number) => void;
+  onPageSizeChange: (size: number) => void;
   vendorInput: string;
   onVendorInputChange: (value: string) => void;
   status: InvoiceStatus | "all";
@@ -69,6 +70,7 @@ export function InvoicesDataTable({
   totalPages,
   pageSize,
   onPageChange,
+  onPageSizeChange,
   vendorInput,
   onVendorInputChange,
   status,
@@ -210,9 +212,26 @@ export function InvoicesDataTable({
 
       {/* Pagination */}
       <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">
-          {total === 0 ? "No results" : `${start}–${end} of ${total} invoice${total !== 1 ? "s" : ""}`}
-        </p>
+        <div className="flex items-center gap-2">
+          <p className="text-sm text-muted-foreground">
+            {total === 0 ? "No results" : `${start}–${end} of ${total} invoice${total !== 1 ? "s" : ""}`}
+          </p>
+          <Select
+            value={String(pageSize)}
+            onValueChange={(v) => onPageSizeChange(Number(v))}
+          >
+            <SelectTrigger className="h-8 w-24 text-sm">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {[10, 20, 50, 100].map((n) => (
+                <SelectItem key={n} value={String(n)}>
+                  {n} / page
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         <div className="flex items-center gap-2">
           <Button
             variant="outline"

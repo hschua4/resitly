@@ -6,13 +6,12 @@ import { columns } from "./columns";
 import { InvoicesDataTable } from "./data-table";
 import type { InvoiceStatus } from "@resitly/types";
 
-const PAGE_SIZE = 20;
-
 export default function InvoicesPage() {
   const [vendorInput, setVendorInput] = useState("");
   const [vendor, setVendor] = useState("");
   const [status, setStatus] = useState<InvoiceStatus | "all">("all");
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
 
   // Debounce vendor input → reset to page 1 on change
   useEffect(() => {
@@ -27,7 +26,7 @@ export default function InvoicesPage() {
     vendor: vendor || undefined,
     status: status === "all" ? undefined : status,
     page,
-    limit: PAGE_SIZE,
+    limit: pageSize,
   });
 
   return (
@@ -39,8 +38,12 @@ export default function InvoicesPage() {
       total={data?.total ?? 0}
       page={page}
       totalPages={data?.totalPages ?? 1}
-      pageSize={PAGE_SIZE}
+      pageSize={pageSize}
       onPageChange={setPage}
+      onPageSizeChange={(size) => {
+        setPageSize(size);
+        setPage(1);
+      }}
       vendorInput={vendorInput}
       onVendorInputChange={setVendorInput}
       status={status}
