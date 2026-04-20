@@ -27,7 +27,7 @@ export default function ForgotPasswordPage() {
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
   const onSubmit = async (values: FormValues) => {
-    await authClient.forgetPassword({
+    await authClient.requestPasswordReset({
       email:       values.email,
       redirectTo:  "/reset-password",
     });

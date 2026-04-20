@@ -129,13 +129,14 @@ export default function InvoiceReviewPage() {
       taxAmount:   values.taxAmount || undefined,
       total:       values.total || undefined,
       notes:       values.notes || undefined,
-      lineItems:   values.lineItems.map((li) => ({
+      lineItems:   values.lineItems.map((li, index) => ({
         id:          li.id,
         categoryId:  li.categoryId,
         description: li.description,
         quantity:    li.quantity,
         unitPrice:   li.unitPrice,
         amount:      li.amount,
+        sortOrder:   String(index),
       })),
     });
     toast.success("Invoice saved");
@@ -154,13 +155,14 @@ export default function InvoiceReviewPage() {
       taxAmount:   values.taxAmount || undefined,
       total:       values.total || undefined,
       notes:       values.notes || undefined,
-      lineItems:   values.lineItems.map((li) => ({
+      lineItems:   values.lineItems.map((li, index) => ({
         id:          li.id,
         categoryId:  li.categoryId,
         description: li.description,
         quantity:    li.quantity,
         unitPrice:   li.unitPrice,
         amount:      li.amount,
+        sortOrder:   String(index),
       })),
     });
     await confirmInvoice.mutateAsync();
