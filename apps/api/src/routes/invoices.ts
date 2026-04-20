@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { requireSession } from "../middleware/session.ts";
+import { createRateLimit } from "../middleware/rate-limit.ts";
 import { NotFoundError, ValidationError } from "../lib/errors.ts";
 import {
   getInvoiceById,
@@ -20,13 +21,14 @@ import {
 } from "@resitly/types";
 
 export const invoicesRouter = new Hono<AppEnv>()
+  .use("*", requireSession)
+  .use("*", createRateLimit({ limit: 60, windowMs: 60_000, keyPrefix: "rl:invoices" }))
   /**
    * GET /v1/invoices
    * List invoices with optional filters.
    */
   .get(
     "/",
-    requireSession,
     zValidator("query", InvoiceFiltersSchema),
     async (c) => {
       const user    = c.get("user");
@@ -42,7 +44,6 @@ export const invoicesRouter = new Hono<AppEnv>()
    */
   .post(
     "/",
-    requireSession,
     zValidator("json", CreateInvoiceSchema),
     async (c) => {
       const user = c.get("user");
@@ -56,7 +57,7 @@ export const invoicesRouter = new Hono<AppEnv>()
    * GET /v1/invoices/:id
    * Single invoice with line items and categories.
    */
-  .get("/:id", requireSession, async (c) => {
+  .get("/:id", async (c) => {
     const user    = c.get("user");
     const id      = c.req.param("id");
     const invoice = await getInvoiceById(id, user.id);
@@ -70,7 +71,6 @@ export const invoicesRouter = new Hono<AppEnv>()
    */
   .patch(
     "/:id",
-    requireSession,
     zValidator("json", UpdateInvoiceSchema),
     async (c) => {
       const user = c.get("user");
@@ -109,7 +109,7 @@ export const invoicesRouter = new Hono<AppEnv>()
    * PATCH /v1/invoices/:id/confirm
    * Mark invoice as reviewed.
    */
-  .patch("/:id/confirm", requireSession, async (c) => {
+  .patch("/:id/confirm", async (c) => {
     const user = c.get("user");
     const id   = c.req.param("id");
 
@@ -128,7 +128,7 @@ export const invoicesRouter = new Hono<AppEnv>()
    * DELETE /v1/invoices/:id
    * Delete invoice and its R2 file.
    */
-  .delete("/:id", requireSession, async (c) => {
+  .delete("/:id", async (c) => {
     const user    = c.get("user");
     const id      = c.req.param("id");
     const invoice = await getInvoiceById(id, user.id);

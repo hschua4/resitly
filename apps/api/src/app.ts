@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { corsMiddleware } from "./middleware/cors.ts";
+import { createRateLimit } from "./middleware/rate-limit.ts";
 import { auth } from "./auth.ts";
 import { AppError } from "./lib/errors.ts";
 import type { AppEnv } from "./lib/hono.ts";
@@ -18,8 +19,10 @@ export function createApp() {
 
   // ── Global middleware ─────────────────────────────────────
   app.use("*", corsMiddleware);
+  app.use("*", createRateLimit({ limit: 300, windowMs: 60_000, keyPrefix: "rl:global" }));
 
   // ── Better Auth routes ────────────────────────────────────
+  app.use("/api/auth/**", createRateLimit({ limit: 10, windowMs: 60_000, keyPrefix: "rl:auth" }));
   app.on(["POST", "GET"], "/api/auth/**", (c) => auth.handler(c.req.raw));
 
   // ── Health check ──────────────────────────────────────────

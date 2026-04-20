@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { requireSession } from "../middleware/session.ts";
+import { createRateLimit } from "../middleware/rate-limit.ts";
 import {
   getDashboardSummary,
   getSpendByCategory,
@@ -8,11 +9,13 @@ import {
 import type { AppEnv } from "../lib/hono.ts";
 
 export const dashboardRouter = new Hono<AppEnv>()
+  .use("*", requireSession)
+  .use("*", createRateLimit({ limit: 30, windowMs: 60_000, keyPrefix: "rl:dashboard" }))
   /**
    * GET /v1/dashboard/summary
    * Total spend this month, last month, counts, avg per invoice.
    */
-  .get("/summary", requireSession, async (c) => {
+  .get("/summary", async (c) => {
     const user    = c.get("user");
     const summary = await getDashboardSummary(user.id);
     return c.json({ data: summary });
@@ -22,7 +25,7 @@ export const dashboardRouter = new Hono<AppEnv>()
    * GET /v1/dashboard/by-category
    * Spend grouped by category for pie chart.
    */
-  .get("/by-category", requireSession, async (c) => {
+  .get("/by-category", async (c) => {
     const user = c.get("user");
     const data = await getSpendByCategory(user.id);
     return c.json({ data });
@@ -32,7 +35,7 @@ export const dashboardRouter = new Hono<AppEnv>()
    * GET /v1/dashboard/by-month
    * Spend grouped by month, last 12 months, for bar chart.
    */
-  .get("/by-month", requireSession, async (c) => {
+  .get("/by-month", async (c) => {
     const user = c.get("user");
     const data = await getSpendByMonth(user.id);
     return c.json({ data });

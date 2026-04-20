@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { requireSession } from "../middleware/session.ts";
+import { createRateLimit } from "../middleware/rate-limit.ts";
 import { NotFoundError, ValidationError } from "../lib/errors.ts";
 import {
   getInvoiceById,
@@ -12,7 +13,10 @@ import { fetchFileBuffer } from "../lib/r2.ts";
 import { extractFromFile } from "../use-cases/ai-extract.ts";
 import type { AppEnv } from "../lib/hono.ts";
 
+const extractRateLimit = createRateLimit({ limit: 5, windowMs: 10 * 60_000, keyPrefix: "rl:extract" });
+
 export const extractRouter = new Hono<AppEnv>()
+  .use("*", requireSession)
   /**
    * POST /v1/invoices/:id/extract
    *
@@ -20,7 +24,7 @@ export const extractRouter = new Hono<AppEnv>()
    * then stores the structured results and transitions status to "review".
    * On failure, reverts status to "pending" so the user can retry.
    */
-  .post("/:id/extract", requireSession, async (c) => {
+  .post("/:id/extract", extractRateLimit, async (c) => {
     const user = c.get("user");
     const id   = c.req.param("id");
 

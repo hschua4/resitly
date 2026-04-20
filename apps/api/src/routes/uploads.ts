@@ -2,11 +2,14 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { uuidv7 } from "uuidv7";
 import { requireSession } from "../middleware/session.ts";
+import { createRateLimit } from "../middleware/rate-limit.ts";
 import { generateUploadPresignedUrl, getPublicUrl } from "../lib/r2.ts";
 import type { AppEnv } from "../lib/hono.ts";
 import { PresignUploadSchema } from "@resitly/types";
 
 export const uploadsRouter = new Hono<AppEnv>()
+  .use("*", requireSession)
+  .use("*", createRateLimit({ limit: 20, windowMs: 60_000, keyPrefix: "rl:uploads" }))
   /**
    * POST /v1/uploads/presign
    *
@@ -15,7 +18,6 @@ export const uploadsRouter = new Hono<AppEnv>()
    */
   .post(
     "/presign",
-    requireSession,
     zValidator("json", PresignUploadSchema),
     async (c) => {
       const user = c.get("user");

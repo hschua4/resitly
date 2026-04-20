@@ -1,19 +1,21 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { requireSession } from "../middleware/session.ts";
+import { createRateLimit } from "../middleware/rate-limit.ts";
 import { getInvoicesForExport } from "../data-access/invoices.ts";
 import type { AppEnv } from "../lib/hono.ts";
 import { ExportFiltersSchema } from "@resitly/types";
 import { format } from "date-fns";
 
 export const exportRouter = new Hono<AppEnv>()
+  .use("*", requireSession)
+  .use("*", createRateLimit({ limit: 10, windowMs: 60_000, keyPrefix: "rl:export" }))
   /**
    * GET /v1/export.csv
    * Download CSV of invoices with filters.
    */
   .get(
     "/",
-    requireSession,
     zValidator("query", ExportFiltersSchema),
     async (c) => {
       const user    = c.get("user");
