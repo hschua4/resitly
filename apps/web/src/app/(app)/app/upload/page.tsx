@@ -86,13 +86,6 @@ export default function UploadPage() {
 
   return (
     <div className="max-w-xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Upload Invoice</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Upload a photo or PDF of your invoice or receipt. AI will extract the details automatically.
-        </p>
-      </div>
-
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Select file</CardTitle>

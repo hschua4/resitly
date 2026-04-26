@@ -34,9 +34,9 @@ import {
 
 export default function DashboardPage() {
   const { data: summary, isLoading: summaryLoading } = useDashboardSummary();
-  const { data: byCategory = [] }                    = useSpendByCategory();
-  const { data: byMonth = [] }                       = useSpendByMonth();
-  const { data: recentData }                         = useInvoices({ limit: 5 });
+  const { data: byCategory = [] } = useSpendByCategory();
+  const { data: byMonth = [] } = useSpendByMonth();
+  const { data: recentData } = useInvoices({ limit: 5 });
 
   const recentInvoices = recentData?.data ?? [];
 
@@ -58,12 +58,6 @@ export default function DashboardPage() {
             Your expense overview
           </p>
         </div>
-        <Button asChild>
-          <Link href="/app/upload">
-            <Upload className="h-4 w-4 mr-2" />
-            Upload Invoice
-          </Link>
-        </Button>
       </div>
 
       {/* Summary cards */}
@@ -82,8 +76,14 @@ export default function DashboardPage() {
                 <p className="text-2xl font-bold">
                   {formatMYR(summary?.totalSpendThisMonth)}
                 </p>
-                <p className={`text-xs mt-1 flex items-center gap-1 ${isUp ? "text-red-500" : "text-green-600"}`}>
-                  {isUp ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                <p
+                  className={`text-xs mt-1 flex items-center gap-1 ${isUp ? "text-red-500" : "text-green-600"}`}
+                >
+                  {isUp ? (
+                    <TrendingUp className="h-3 w-3" />
+                  ) : (
+                    <TrendingDown className="h-3 w-3" />
+                  )}
                   {Math.abs(pctChange).toFixed(1)}% vs last month
                 </p>
               </>
@@ -159,16 +159,11 @@ export default function DashboardPage() {
                     labelLine={false}
                   >
                     {byCategory.map((entry) => (
-                      <Cell
-                        key={entry.categoryId}
-                        fill={entry.categoryColor}
-                      />
+                      <Cell key={entry.categoryId} fill={entry.categoryColor} />
                     ))}
                   </Pie>
                   <Tooltip
-                    formatter={(value: unknown) =>
-                      formatMYR(String(value))
-                    }
+                    formatter={(value: unknown) => formatMYR(String(value))}
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -179,7 +174,9 @@ export default function DashboardPage() {
         {/* Spend by Month — Bar */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm">Monthly Spend (last 12 months)</CardTitle>
+            <CardTitle className="text-sm">
+              Monthly Spend (last 12 months)
+            </CardTitle>
           </CardHeader>
           <CardContent>
             {byMonth.length === 0 ? (
@@ -188,7 +185,10 @@ export default function DashboardPage() {
               </div>
             ) : (
               <ResponsiveContainer width="100%" height={220}>
-                <BarChart data={byMonth} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                <BarChart
+                  data={byMonth}
+                  margin={{ top: 5, right: 10, left: 0, bottom: 5 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                   <XAxis
                     dataKey="month"
@@ -201,7 +201,10 @@ export default function DashboardPage() {
                     width={50}
                   />
                   <Tooltip
-                    formatter={(value: unknown) => [formatMYR(String(value)), "Total"]}
+                    formatter={(value: unknown) => [
+                      formatMYR(String(value)),
+                      "Total",
+                    ]}
                     labelFormatter={(label) => `Month: ${label}`}
                   />
                   <Bar
@@ -253,7 +256,9 @@ export default function DashboardPage() {
                   </div>
                   <div className="flex items-center gap-3">
                     <InvoiceStatusBadge status={inv.status} />
-                    <p className="text-sm font-medium">{formatMYR(inv.total)}</p>
+                    <p className="text-sm font-medium">
+                      {formatMYR(inv.total)}
+                    </p>
                   </div>
                 </Link>
               ))}
