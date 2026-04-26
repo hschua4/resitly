@@ -1,12 +1,13 @@
 /**
  * Typed fetch wrapper for the Resitly API.
- * Requests go to /v1/... which Next.js rewrites to the Hono backend.
+ * Calls go directly to the Hono backend at NEXT_PUBLIC_API_URL.
  */
 export async function apiClient<T = unknown>(
-  path: string,
+  path: `/${string}`,
   options: RequestInit = {}
 ): Promise<T> {
-  const res = await fetch(path.startsWith("/") ? path : `/v1/${path}`, {
+  const base = process.env.NEXT_PUBLIC_API_URL;
+  const res = await fetch(`${base}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",

@@ -58,7 +58,7 @@ export default function SignUpPage() {
   const handleGoogleSignIn = async () => {
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/onboarding",
+      callbackURL: `${process.env.NEXT_PUBLIC_APP_URL}/onboarding`,
     });
   };
 

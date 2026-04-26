@@ -51,7 +51,7 @@ export function AppSidebar() {
 
   const handleSignOut = async () => {
     await authClient.signOut();
-    router.push("/sign-in");
+    router.replace("/sign-in");
   };
 
   const userEmail = session?.user?.email ?? "";

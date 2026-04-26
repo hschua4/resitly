@@ -16,7 +16,7 @@ export const auth = betterAuth({
   }),
   baseURL: env.BETTER_AUTH_URL,
   secret:  env.BETTER_AUTH_SECRET,
-  trustedOrigins: [env.CORS_ORIGIN],
+  trustedOrigins: env.CORS_ORIGINS,
   emailAndPassword: {
     enabled: true,
   },
@@ -24,6 +24,14 @@ export const auth = betterAuth({
     google: {
       clientId:     env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
+    },
+  },
+  advanced: {
+    defaultCookieAttributes: {
+      sameSite: "lax",
+      httpOnly: true,
+      secure:   env.NODE_ENV === "production",
+      ...(env.COOKIE_DOMAIN ? { domain: env.COOKIE_DOMAIN } : {}),
     },
   },
 });

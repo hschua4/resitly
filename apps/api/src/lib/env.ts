@@ -14,7 +14,10 @@ export const env = createEnv({
     R2_BUCKET_NAME:       z.string().min(1),
     R2_PUBLIC_URL:        z.string().url(),
     GEMINI_API_KEY:       z.string().min(1),
-    CORS_ORIGIN:          z.string().url(),
+    CORS_ORIGINS:         z.string().transform((s) =>
+      s.split(",").map((o) => o.trim()).filter(Boolean)
+    ),
+    COOKIE_DOMAIN:        z.string().optional(),
     PORT:                 z.coerce.number().default(3001),
     NODE_ENV:             z.enum(["development", "production", "test"]).default("development"),
     GOOGLE_CLIENT_ID:     z.string().min(1),

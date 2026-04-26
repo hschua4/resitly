@@ -29,7 +29,7 @@ export default function ForgotPasswordPage() {
   const onSubmit = async (values: FormValues) => {
     await authClient.requestPasswordReset({
       email:       values.email,
-      redirectTo:  "/reset-password",
+      redirectTo:  `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`,
     });
     setSent(true);
   };
