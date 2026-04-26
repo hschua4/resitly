@@ -15,7 +15,7 @@ function isPublicPath(pathname: string): boolean {
   );
 }
 
-export async function middleware(req: NextRequest): Promise<NextResponse> {
+export async function proxy(req: NextRequest): Promise<NextResponse> {
   const { pathname } = req.nextUrl;
 
   if (isPublicPath(pathname)) {
