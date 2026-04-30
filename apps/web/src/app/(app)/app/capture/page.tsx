@@ -61,7 +61,7 @@ export default function CapturePage() {
       setStep("triggering");
       void apiClient(`/v1/invoices/${invoice.id}/extract`, { method: "POST" }).catch(() => {});
 
-      router.push(`/app2/invoices/${invoice.id}`);
+      router.push(`/app/invoices/${invoice.id}`);
     } catch (err) {
       setStep("idle");
       toast.error(err instanceof Error ? err.message : "Upload failed");

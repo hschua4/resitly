@@ -51,33 +51,33 @@ const navGroups: {
   {
     label: "Inbox",
     items: [
-      { label: "Inbox", href: "/app2/inbox", icon: Inbox },
-      { label: "Pipeline", href: "/app2/pipeline", icon: Columns3 },
-      { label: "Calendar", href: "/app2/calendar", icon: CalendarDays },
-      { label: "AI brief", href: "/app2/brief", icon: Sparkles },
+      { label: "Inbox", href: "/app/inbox", icon: Inbox },
+      { label: "Pipeline", href: "/app/pipeline", icon: Columns3 },
+      { label: "Calendar", href: "/app/calendar", icon: CalendarDays },
+      { label: "AI brief", href: "/app/brief", icon: Sparkles },
     ],
   },
   {
     label: "Process",
     items: [
-      { label: "Capture", href: "/app2/capture", icon: Camera },
-      { label: "Bulk", href: "/app2/bulk", icon: Layers },
-      { label: "SST rules", href: "/app2/sst-rules", icon: Tag },
+      { label: "Capture", href: "/app/capture", icon: Camera },
+      { label: "Bulk", href: "/app/bulk", icon: Layers },
+      { label: "SST rules", href: "/app/sst-rules", icon: Tag },
     ],
   },
   {
     label: "Output",
     items: [
-      { label: "SST", href: "/app2/sst", icon: PieChart },
-      { label: "Export", href: "/app2/export", icon: Download },
-      { label: "Reports", href: "/app2/reports", icon: FileText },
+      { label: "SST", href: "/app/sst", icon: PieChart },
+      { label: "Export", href: "/app/export", icon: Download },
+      { label: "Reports", href: "/app/reports", icon: FileText },
     ],
   },
   {
     label: "Manage",
     items: [
-      { label: "Vendors", href: "/app2/vendors", icon: Building2 },
-      { label: "Approvals", href: "/app2/approvals", icon: CheckSquare },
+      { label: "Vendors", href: "/app/vendors", icon: Building2 },
+      { label: "Approvals", href: "/app/approvals", icon: CheckSquare },
     ],
   },
 ];

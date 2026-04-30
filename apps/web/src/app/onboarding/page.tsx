@@ -11,5 +11,5 @@ import { redirect } from "next/navigation";
 export default async function OnboardingPage() {
   // In v1 there are no real orgs — redirect to a fixed personal slug.
   // The actual user context is resolved via session cookie in the API.
-  redirect("/app/dashboard");
+  redirect("/app/inbox");
 }

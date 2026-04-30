@@ -323,7 +323,7 @@ export default function BulkTriagePage() {
               return (
                 <div
                   key={inv.id}
-                  onClick={() => router.push(`/app2/invoices/${inv.id}`)}
+                  onClick={() => router.push(`/app/invoices/${inv.id}`)}
                   style={{
                     display: "grid",
                     gridTemplateColumns: "32px 1.4fr 0.7fr 0.7fr 1fr 0.7fr 0.8fr",

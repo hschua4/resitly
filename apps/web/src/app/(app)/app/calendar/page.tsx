@@ -366,7 +366,7 @@ function DayPanel({
           invoices.map((inv) => (
             <Link
               key={inv.id}
-              href={`/app2/invoices/${inv.id}`}
+              href={`/app/invoices/${inv.id}`}
               style={{
                 display: "flex",
                 flexDirection: "column",

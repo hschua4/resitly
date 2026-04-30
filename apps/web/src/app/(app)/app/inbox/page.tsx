@@ -114,7 +114,7 @@ export default function InboxPage() {
                 }}
               />
             </div>
-            <Bracket onClick={() => router.push("/app2/capture")} accent>
+            <Bracket onClick={() => router.push("/app/capture")} accent>
               ＋ upload
             </Bracket>
           </div>
@@ -192,7 +192,7 @@ export default function InboxPage() {
               }}
             >
               No receipts here yet.{" "}
-              <Link href="/app2/capture" style={{ color: RK.accent }}>
+              <Link href="/app/capture" style={{ color: RK.accent }}>
                 Upload your first one →
               </Link>
             </div>
@@ -208,7 +208,7 @@ export default function InboxPage() {
                   setSelected((s) => ({ ...s, [r.id]: !s[r.id] }))
                 }
                 isLast={i === rows.length - 1}
-                onOpen={() => router.push(`/app2/invoices/${r.id}`)}
+                onOpen={() => router.push(`/app/invoices/${r.id}`)}
               />
             ))}
         </div>

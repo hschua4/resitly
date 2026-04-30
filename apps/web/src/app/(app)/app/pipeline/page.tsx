@@ -108,7 +108,7 @@ export default function PipelinePage() {
         kicker="pipeline"
         title="Receipts moving through review"
         right={
-          <Bracket onClick={() => router.push("/app2/capture")} accent>
+          <Bracket onClick={() => router.push("/app/capture")} accent>
             ＋ upload
           </Bracket>
         }
@@ -239,7 +239,7 @@ function Card({ invoice }: { invoice: Invoice }) {
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => {
             e.stopPropagation();
-            router.push(`/app2/invoices/${invoice.id}`);
+            router.push(`/app/invoices/${invoice.id}`);
           }}
           style={{
             color: RK.ink,
