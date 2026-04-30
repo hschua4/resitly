@@ -1,29 +1,31 @@
 "use client";
 
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
+import {
+  Bracket,
+  H,
+  Meter,
+  Pill,
+  ReceiptScan,
+  RK,
+  ScanBox,
+  type Density,
+  type StyleProps,
+  type Tone,
+} from "@/components/v2/kit";
 
-export const RK = {
-  ink: "oklch(0.22 0.01 60)",
-  ink2: "oklch(0.42 0.01 60)",
-  ink3: "oklch(0.62 0.01 60)",
-  rule: "oklch(0.86 0.005 60)",
-  rule2: "oklch(0.92 0.005 60)",
-  paper: "oklch(0.985 0.003 80)",
-  paper2: "oklch(0.965 0.005 80)",
-  hi: "oklch(0.95 0.02 50)",
-  accent: "oklch(0.62 0.14 50)",
-  accentSoft: "oklch(0.94 0.04 50)",
-  ok: "oklch(0.6 0.1 150)",
-  okSoft: "oklch(0.94 0.04 150)",
-  warn: "oklch(0.7 0.13 80)",
-  warnSoft: "oklch(0.95 0.05 80)",
-  err: "oklch(0.58 0.16 25)",
-  errSoft: "oklch(0.95 0.04 25)",
-  mono: "'JetBrains Mono', ui-monospace, monospace",
-  sans: "'Geist', 'Inter', system-ui, sans-serif",
-} as const;
+export {
+  Bracket,
+  H,
+  Meter,
+  Pill,
+  ReceiptScan,
+  RK,
+  ScanBox,
+};
+export type { Density, StyleProps, Tone };
 
-export type Tone = "ink" | "ok" | "warn" | "err" | "accent";
+// ── Gallery-only scaffolding ─────────────────────────────────────────────
 
 export function Shell({
   children,
@@ -203,106 +205,6 @@ function Avatar() {
   );
 }
 
-export function Bracket({
-  children,
-  block,
-  accent,
-  onClick,
-}: {
-  children: ReactNode;
-  block?: boolean;
-  accent?: boolean;
-  onClick?: () => void;
-}) {
-  return (
-    <span
-      onClick={onClick}
-      style={{
-        display: block ? "block" : "inline-block",
-        border: `1px solid ${accent ? RK.accent : RK.rule}`,
-        color: accent ? RK.accent : RK.ink2,
-        padding: "4px 8px",
-        borderRadius: 3,
-        fontFamily: RK.mono,
-        fontSize: 10.5,
-        letterSpacing: 0.3,
-        textAlign: block ? "center" : "left",
-        cursor: "default",
-        background: accent ? RK.accentSoft : "transparent",
-      }}
-    >
-      {children}
-    </span>
-  );
-}
-
-export function Pill({
-  tone = "ink",
-  children,
-}: {
-  tone?: Tone;
-  children: ReactNode;
-}) {
-  const tones: Record<Tone, [string, string, string]> = {
-    ink: [RK.paper2, RK.ink2, RK.rule],
-    ok: [RK.okSoft, RK.ok, RK.ok],
-    warn: [RK.warnSoft, RK.warn, RK.warn],
-    err: [RK.errSoft, RK.err, RK.err],
-    accent: [RK.accentSoft, RK.accent, RK.accent],
-  };
-  const [bg, fg, br] = tones[tone] || tones.ink;
-  return (
-    <span
-      style={{
-        display: "inline-block",
-        padding: "2px 7px",
-        borderRadius: 999,
-        background: bg,
-        color: fg,
-        border: `1px solid ${br}`,
-        fontFamily: RK.mono,
-        fontSize: 9.5,
-        letterSpacing: 0.3,
-        lineHeight: 1.4,
-      }}
-    >
-      {children}
-    </span>
-  );
-}
-
-export function Meter({ level = 3, label }: { level?: number; label?: string }) {
-  const cells = [1, 2, 3].map((i) => i <= level);
-  const tone = level >= 3 ? RK.ok : level === 2 ? RK.warn : RK.err;
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 5,
-        fontFamily: RK.mono,
-        fontSize: 9.5,
-        color: RK.ink3,
-      }}
-    >
-      <span style={{ display: "inline-flex", gap: 2 }}>
-        {cells.map((on, i) => (
-          <span
-            key={i}
-            style={{
-              width: 6,
-              height: 8,
-              background: on ? tone : "transparent",
-              border: `1px solid ${on ? tone : RK.rule}`,
-            }}
-          />
-        ))}
-      </span>
-      {label && <span>{label}</span>}
-    </span>
-  );
-}
-
 export function Pin({ n, hidden }: { n: number; hidden?: boolean }) {
   if (hidden) return null;
   return (
@@ -324,136 +226,6 @@ export function Pin({ n, hidden }: { n: number; hidden?: boolean }) {
     >
       {n}
     </span>
-  );
-}
-
-let scanIdCounter = 0;
-function nextScanId() {
-  scanIdCounter += 1;
-  return `hatch-${scanIdCounter}`;
-}
-
-export function ReceiptScan({
-  w = 220,
-  h = 320,
-  rotate = 0,
-  label = "RECEIPT · IMG_0421.jpg",
-}: {
-  w?: number;
-  h?: number;
-  rotate?: number;
-  label?: string;
-}) {
-  const id = nextScanId();
-  return (
-    <div
-      style={{
-        position: "relative",
-        width: w,
-        height: h,
-        transform: `rotate(${rotate}deg)`,
-        transformOrigin: "center",
-        filter: "drop-shadow(0 1px 0 rgba(0,0,0,0.04))",
-      }}
-    >
-      <svg
-        width={w}
-        height={h}
-        style={{ display: "block", background: "white", border: `1px solid ${RK.rule}` }}
-      >
-        <defs>
-          <pattern
-            id={id}
-            width="6"
-            height="6"
-            patternUnits="userSpaceOnUse"
-            patternTransform="rotate(45)"
-          >
-            <line x1="0" y1="0" x2="0" y2="6" stroke={RK.rule} strokeWidth="1" />
-          </pattern>
-        </defs>
-        <rect x="14" y="18" width={w - 28} height="14" fill={RK.rule2} />
-        <rect x="14" y="38" width={(w - 28) * 0.6} height="8" fill={RK.rule2} />
-        <rect x="14" y="62" width={w - 28} height={h - 130} fill={`url(#${id})`} />
-        <rect x="14" y={h - 60} width={w - 28} height="1" fill={RK.rule} />
-        <rect x="14" y={h - 50} width={(w - 28) * 0.4} height="8" fill={RK.rule2} />
-        <rect x={w - 70} y={h - 50} width="56" height="10" fill={RK.ink2} opacity="0.7" />
-        <rect x="14" y={h - 32} width={(w - 28) * 0.7} height="6" fill={RK.rule2} />
-        <rect x="14" y={h - 22} width={(w - 28) * 0.5} height="6" fill={RK.rule2} />
-      </svg>
-      <div
-        style={{
-          position: "absolute",
-          top: 6,
-          left: 6,
-          fontFamily: RK.mono,
-          fontSize: 8.5,
-          color: RK.ink3,
-          letterSpacing: 0.4,
-          background: "white",
-          padding: "1px 4px",
-          border: `1px solid ${RK.rule}`,
-        }}
-      >
-        {label}
-      </div>
-    </div>
-  );
-}
-
-export function ScanBox({
-  x,
-  y,
-  w,
-  h,
-  n,
-  tone = "accent",
-  dashed,
-}: {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  n?: number;
-  tone?: "accent" | "warn" | "err";
-  dashed?: boolean;
-}) {
-  const c = tone === "warn" ? RK.warn : tone === "err" ? RK.err : RK.accent;
-  return (
-    <div
-      style={{
-        position: "absolute",
-        left: x,
-        top: y,
-        width: w,
-        height: h,
-        border: `${dashed ? "1.5px dashed" : "1.5px solid"} ${c}`,
-        background: tone === "warn" ? RK.warnSoft : RK.accentSoft,
-        opacity: 0.85,
-      }}
-    >
-      {n != null && (
-        <div
-          style={{
-            position: "absolute",
-            top: -9,
-            left: -9,
-            width: 16,
-            height: 16,
-            borderRadius: "50%",
-            background: c,
-            color: "white",
-            fontFamily: RK.mono,
-            fontSize: 9.5,
-            display: "grid",
-            placeItems: "center",
-            fontWeight: 600,
-          }}
-        >
-          {n}
-        </div>
-      )}
-    </div>
   );
 }
 
@@ -515,41 +287,6 @@ export function Field({
   );
 }
 
-export function H({
-  kicker,
-  title,
-  right,
-}: {
-  kicker?: ReactNode;
-  title?: ReactNode;
-  right?: ReactNode;
-}) {
-  return (
-    <div style={{ display: "flex", alignItems: "baseline", gap: 12, padding: "14px 18px 10px" }}>
-      <div>
-        {kicker && (
-          <div
-            style={{
-              fontFamily: RK.mono,
-              fontSize: 10,
-              color: RK.ink3,
-              textTransform: "uppercase",
-              letterSpacing: 0.6,
-            }}
-          >
-            {kicker}
-          </div>
-        )}
-        {title && (
-          <div style={{ fontSize: 18, color: RK.ink, fontWeight: 500, marginTop: 2 }}>{title}</div>
-        )}
-      </div>
-      <div style={{ flex: 1 }} />
-      {right}
-    </div>
-  );
-}
-
 export function Legend({ items, hidden }: { items: string[]; hidden?: boolean }) {
   if (hidden) return null;
   return (
@@ -559,7 +296,7 @@ export function Legend({ items, hidden }: { items: string[]; hidden?: boolean })
         right: 12,
         top: 12,
         width: 200,
-        background: "white",
+        background: RK.surface,
         border: `1px solid ${RK.rule}`,
         padding: 10,
         fontFamily: RK.mono,
@@ -590,7 +327,3 @@ export function Legend({ items, hidden }: { items: string[]; hidden?: boolean })
     </div>
   );
 }
-
-export type Density = "compact" | "regular" | "comfy";
-
-export type StyleProps = CSSProperties;

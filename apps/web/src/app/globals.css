@@ -105,6 +105,27 @@
   --chart-3: #F59E0B;
   --chart-4: #7170ff;
   --chart-5: #EF4444;
+
+  /* ── v2 wireframe tokens (RK) — light ───────────────────── */
+  --rk-ink:        oklch(0.22 0.01 60);
+  --rk-ink2:       oklch(0.42 0.01 60);
+  --rk-ink3:       oklch(0.62 0.01 60);
+  --rk-rule:       oklch(0.86 0.005 60);
+  --rk-rule2:      oklch(0.92 0.005 60);
+  --rk-paper:      oklch(0.985 0.003 80);
+  --rk-paper2:     oklch(0.965 0.005 80);
+  --rk-surface:    #ffffff;
+  --rk-hi:         oklch(0.95 0.02 50);
+  --rk-accent:     oklch(0.62 0.14 50);
+  --rk-accent-soft:oklch(0.94 0.04 50);
+  --rk-ok:         oklch(0.6 0.1 150);
+  --rk-ok-soft:    oklch(0.94 0.04 150);
+  --rk-warn:       oklch(0.7 0.13 80);
+  --rk-warn-soft:  oklch(0.95 0.05 80);
+  --rk-err:        oklch(0.58 0.16 25);
+  --rk-err-soft:   oklch(0.95 0.04 25);
+  --rk-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --rk-sans: 'Geist', 'Inter', system-ui, sans-serif;
 }
 
 /* ─── Dark mode (Linear-native) ──────────────────────────────────────────── */
@@ -156,6 +177,25 @@
   --chart-3: #F59E0B;
   --chart-4: #828fff;
   --chart-5: #EF4444;
+
+  /* ── v2 wireframe tokens (RK) — dark ───────────────────── */
+  --rk-ink:        oklch(0.92 0.01 60);
+  --rk-ink2:       oklch(0.72 0.01 60);
+  --rk-ink3:       oklch(0.52 0.01 60);
+  --rk-rule:       oklch(0.30 0.005 60);
+  --rk-rule2:      oklch(0.24 0.005 60);
+  --rk-paper:      oklch(0.16 0.005 80);
+  --rk-paper2:     oklch(0.20 0.005 80);
+  --rk-surface:    oklch(0.22 0.005 80);
+  --rk-hi:         oklch(0.30 0.02 50);
+  --rk-accent:     oklch(0.72 0.14 50);
+  --rk-accent-soft:oklch(0.30 0.05 50);
+  --rk-ok:         oklch(0.72 0.12 150);
+  --rk-ok-soft:    oklch(0.28 0.05 150);
+  --rk-warn:       oklch(0.78 0.13 80);
+  --rk-warn-soft:  oklch(0.30 0.06 80);
+  --rk-err:        oklch(0.68 0.16 25);
+  --rk-err-soft:   oklch(0.30 0.06 25);
 }
 
 @layer base {
