@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate } from "@/lib/utils";
-import type { InvoiceStatus } from "@resitly/types";
+import type { InvoiceStatus, LineItem } from "@resitly/types";
 
 const lineItemSchema = z.object({
   id:          z.string().optional(),
@@ -117,7 +117,7 @@ export default function InvoiceReviewPageV2() {
       taxAmount:   invoice.taxAmount ?? "",
       total:       invoice.total ?? "",
       notes:       invoice.notes ?? "",
-      lineItems: (invoice.lineItems ?? []).map((li, i) => ({
+      lineItems: (invoice.lineItems ?? []).map((li: LineItem, i: number) => ({
         id:          li.id,
         categoryId:  li.categoryId ?? null,
         description: li.description,
