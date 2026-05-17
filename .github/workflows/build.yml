@@ -116,6 +116,8 @@ jobs:
     name: trigger deploy
     needs: [build-api, build-web]
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
     steps:
       - uses: actions/github-script@v7
         with:
