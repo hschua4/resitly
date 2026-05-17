@@ -18,4 +18,6 @@ COPY apps/api ./apps/api
 WORKDIR /app/apps/api
 ENV NODE_ENV=production
 EXPOSE 3001
+HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=5 \
+  CMD wget -qO- http://127.0.0.1:3001/v1/health || exit 1
 CMD ["node", "--import", "tsx/esm", "src/index.ts"]

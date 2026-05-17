@@ -1,46 +1,77 @@
-services:
-  postgres:
-    image: postgres:16-alpine
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: resitly
-      POSTGRES_PASSWORD: resitly
-      POSTGRES_DB: resitly_dev
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+# Prod stack on the Skylab VPS (/srv/resitly).
+# Postgres + Traefik live in /srv/infra. This stack joins their external networks.
+# Images are built in CI and pulled by tag; never built on the VPS.
 
+services:
   api:
-    build:
-      context: .
-      dockerfile: apps/api/Dockerfile
+    image: ghcr.io/${GITHUB_OWNER}/resitly-api:${IMAGE_TAG:-latest}
     restart: unless-stopped
-    env_file: apps/api/.env
-    depends_on:
+    mem_limit: 192m
+    env_file: .env.api
+    networks:
+      - proxy
       - postgres
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3001/v1/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.resitly-api.rule=Host(`api.resitly.hschua.com`)"
+      - "traefik.http.routers.resitly-api.entrypoints=websecure"
+      - "traefik.http.routers.resitly-api.tls=true"
+      - "traefik.http.services.resitly-api.loadbalancer.server.port=3001"
+      - "traefik.http.services.resitly-api.loadbalancer.healthcheck.path=/v1/health"
+      - "traefik.http.services.resitly-api.loadbalancer.healthcheck.interval=15s"
+    deploy:
+      update_config:
+        order: start-first
+        failure_action: rollback
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   web:
-    build:
-      context: .
-      dockerfile: apps/web/Dockerfile
-      args:
-        NEXT_PUBLIC_API_URL: ""  # empty — Next.js rewrites handle routing via Nginx
+    image: ghcr.io/${GITHUB_OWNER}/resitly-web:${IMAGE_TAG:-latest}
     restart: unless-stopped
-    env_file: apps/web/.env
+    mem_limit: 256m
+    env_file: .env.web
+    networks:
+      - proxy
     depends_on:
       - api
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.resitly-web.rule=Host(`resitly.hschua.com`)"
+      - "traefik.http.routers.resitly-web.entrypoints=websecure"
+      - "traefik.http.routers.resitly-web.tls=true"
+      - "traefik.http.services.resitly-web.loadbalancer.server.port=3000"
+      - "traefik.http.services.resitly-web.loadbalancer.healthcheck.path=/health"
+      - "traefik.http.services.resitly-web.loadbalancer.healthcheck.interval=15s"
+    deploy:
+      update_config:
+        order: start-first
+        failure_action: rollback
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
-  nginx:
-    image: nginx:alpine
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/certs:/etc/nginx/certs:ro
-    depends_on:
-      - web
-      - api
-
-volumes:
-  postgres_data:
+networks:
+  proxy:
+    external: true
+  postgres:
+    external: true
