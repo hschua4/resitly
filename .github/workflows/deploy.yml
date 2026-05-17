@@ -23,12 +23,23 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ci
 
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Configure SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Sync compose file to VPS
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          ssh -i ~/.ssh/id_ed25519 "$VPS_USER@$VPS_HOST" "mkdir -p /srv/resitly"
+          scp -i ~/.ssh/id_ed25519 docker-compose.yml "$VPS_USER@$VPS_HOST:/srv/resitly/docker-compose.yml"
 
       - name: Deploy
         env:
