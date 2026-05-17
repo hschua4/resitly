@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Invoice, InvoiceStatus } from "@resitly/types";
+import type { Invoice, InvoiceStatus, LineItem } from "@resitly/types";
 
 type Bucket = "all" | "high" | "low" | "extracting";
 
@@ -147,7 +147,7 @@ export default function BulkTriagePage() {
       for (const id of selectedIds) {
         const inv = allInFlight.find((i) => i.id === id);
         if (!inv) continue;
-        const lineItems = (inv.lineItems ?? []).map((li, idx) => ({
+        const lineItems = (inv.lineItems ?? []).map((li: LineItem, idx: number) => ({
           id:          li.id,
           categoryId:  batchCategory,
           description: li.description,
