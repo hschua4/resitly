@@ -105,7 +105,7 @@ jobs:
           file: apps/web/Dockerfile
           push: true
           build-args: |
-            NEXT_PUBLIC_API_URL=https://api.resitly.hschua.com
+            NEXT_PUBLIC_API_URL=https://resitly-api.hschua.com
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_WEB }}:sha-${{ steps.meta.outputs.sha }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_WEB }}:latest

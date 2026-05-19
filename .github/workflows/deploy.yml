@@ -74,7 +74,7 @@ jobs:
       - name: Smoke test
         run: |
           for i in 1 2 3 4 5 6; do
-            if curl -fsS https://api.resitly.hschua.com/v1/health > /dev/null \
+            if curl -fsS https://resitly-api.hschua.com/v1/health > /dev/null \
                && curl -fsS https://resitly.hschua.com/health > /dev/null; then
               echo "smoke ok"
               exit 0
