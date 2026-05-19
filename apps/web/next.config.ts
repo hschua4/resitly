@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  outputFileTracingRoot: path.join(__dirname, "..", ".."),
   transpilePackages: ["@resitly/types"],
   turbopack: {
     root: path.join(__dirname, "..", ".."),
