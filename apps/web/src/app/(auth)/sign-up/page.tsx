@@ -27,7 +27,7 @@ export default function SignUpPage() {
 
   useEffect(() => {
     if (session?.user) {
-      router.replace("/app/dashboard");
+      router.replace("/app");
     }
   }, [session, router]);
 

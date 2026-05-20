@@ -26,7 +26,7 @@ export default function SignInPage() {
 
   useEffect(() => {
     if (session?.user) {
-      router.replace("/app/dashboard");
+      router.replace("/app");
     }
   }, [session, router]);
 
