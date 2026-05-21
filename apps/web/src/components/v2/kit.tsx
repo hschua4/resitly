@@ -46,20 +46,19 @@ export function Bracket({
       type="button"
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
+      className={["ln-btn", accent ? "ln-btn-primary" : "ln-btn-ghost"].join(" ")}
       style={{
-        display: block ? "block" : "inline-block",
+        display: block ? "flex" : "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 6,
         width: block ? "100%" : "auto",
-        border: `1px solid ${accent ? RK.accent : RK.rule}`,
-        color: disabled ? RK.ink3 : accent ? RK.accent : RK.ink2,
-        padding: "4px 8px",
-        borderRadius: 3,
-        fontFamily: RK.mono,
-        fontSize: 10.5,
-        letterSpacing: 0.3,
-        textAlign: block ? "center" : "left",
+        padding: "6px 12px",
+        borderRadius: 6,
+        fontFamily: RK.sans,
+        fontSize: 13,
+        fontWeight: 510,
         cursor: disabled ? "not-allowed" : onClick ? "pointer" : "default",
-        background: accent ? RK.accentSoft : "transparent",
-        opacity: disabled ? 0.5 : 1,
       }}
     >
       {children}
@@ -75,26 +74,28 @@ export function Pill({
   children: ReactNode;
 }) {
   const tones: Record<Tone, [string, string, string]> = {
-    ink: [RK.paper2, RK.ink2, RK.rule],
-    ok: [RK.okSoft, RK.ok, RK.ok],
-    warn: [RK.warnSoft, RK.warn, RK.warn],
-    err: [RK.errSoft, RK.err, RK.err],
-    accent: [RK.accentSoft, RK.accent, RK.accent],
+    ink: ["transparent", RK.ink2, RK.rule],
+    ok: [RK.okSoft, RK.ok, "transparent"],
+    warn: [RK.warnSoft, RK.warn, "transparent"],
+    err: [RK.errSoft, RK.err, "transparent"],
+    accent: [RK.accentSoft, RK.accent, "transparent"],
   };
   const [bg, fg, br] = tones[tone] || tones.ink;
   return (
     <span
       style={{
-        display: "inline-block",
-        padding: "2px 7px",
-        borderRadius: 999,
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 5,
+        padding: "2px 9px",
+        borderRadius: 9999,
         background: bg,
         color: fg,
         border: `1px solid ${br}`,
-        fontFamily: RK.mono,
-        fontSize: 9.5,
-        letterSpacing: 0.3,
-        lineHeight: 1.4,
+        fontFamily: RK.sans,
+        fontSize: 12,
+        fontWeight: 510,
+        lineHeight: 1.5,
       }}
     >
       {children}
@@ -291,23 +292,22 @@ export function Field({
     >
       <div
         style={{
-          fontFamily: RK.mono,
-          fontSize: 10,
+          fontFamily: RK.sans,
+          fontSize: 13,
           color: RK.ink3,
-          textTransform: "uppercase",
-          letterSpacing: 0.4,
         }}
       >
         {label}
       </div>
       <div
         style={{
-          fontFamily: RK.mono,
-          fontSize: 12,
+          fontFamily: RK.sans,
+          fontSize: 13.5,
+          fontWeight: 510,
           color: tone === "warn" ? RK.warn : RK.ink,
           background: edited ? RK.accentSoft : "transparent",
-          padding: edited ? "2px 4px" : 0,
-          borderRadius: 2,
+          padding: edited ? "2px 6px" : 0,
+          borderRadius: 4,
         }}
       >
         {value}
@@ -332,8 +332,9 @@ export function H({
         {kicker && (
           <div
             style={{
-              fontFamily: RK.mono,
-              fontSize: 10,
+              fontFamily: RK.sans,
+              fontSize: 12,
+              fontWeight: 510,
               color: RK.ink3,
               textTransform: "uppercase",
               letterSpacing: 0.6,
@@ -343,7 +344,18 @@ export function H({
           </div>
         )}
         {title && (
-          <div style={{ fontSize: 18, color: RK.ink, fontWeight: 500, marginTop: 2 }}>{title}</div>
+          <div
+            style={{
+              fontFamily: RK.sans,
+              fontSize: 18,
+              color: RK.ink,
+              fontWeight: 590,
+              letterSpacing: "-0.2px",
+              marginTop: 2,
+            }}
+          >
+            {title}
+          </div>
         )}
       </div>
       <div style={{ flex: 1 }} />

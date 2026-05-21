@@ -49,7 +49,7 @@ export default function ForgotPasswordPage() {
             margin: "0 auto 16px",
             border: `1px solid ${RK.ok}`,
             background: RK.okSoft,
-            borderRadius: 4,
+            borderRadius: 8,
             display: "grid",
             placeItems: "center",
             color: RK.ok,
@@ -84,14 +84,14 @@ export default function ForgotPasswordPage() {
         <Link
           href="/sign-in"
           style={{
-            fontFamily: RK.mono,
-            fontSize: 11,
-            letterSpacing: 0.2,
+            fontFamily: RK.sans,
+            fontSize: 13,
+            fontWeight: 510,
             color: RK.accent,
             textDecoration: "none",
           }}
         >
-          ← back to sign in
+          ← Back to sign in
         </Link>
       </div>
     );
@@ -131,19 +131,18 @@ export default function ForgotPasswordPage() {
 
       <p
         style={{
-          marginTop: 18,
+          marginTop: 20,
           textAlign: "center",
-          fontFamily: RK.mono,
-          fontSize: 11,
-          letterSpacing: 0.2,
+          fontFamily: RK.sans,
+          fontSize: 13,
           color: RK.ink3,
         }}
       >
         <Link
           href="/sign-in"
-          style={{ color: RK.accent, textDecoration: "none" }}
+          style={{ color: RK.accent, textDecoration: "none", fontWeight: 510 }}
         >
-          ← back to sign in
+          ← Back to sign in
         </Link>
       </p>
     </div>

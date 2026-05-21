@@ -7,7 +7,7 @@ import type {
   ReactNode,
 } from "react";
 
-// ─── RK design tokens (shared with landing page; resolved via globals.css) ───
+// ─── Linear design tokens (resolved via CSS vars in globals.css) ─────────────
 
 export const RK = {
   ink: "var(--rk-ink)",
@@ -28,7 +28,7 @@ export const RK = {
   sans: "var(--rk-sans)",
 } as const;
 
-// ─── Kicker — uppercase mono eyebrow ─────────────────────────────────────────
+// ─── Eyebrow — small uppercase label ─────────────────────────────────────────
 
 export function Kicker({
   children,
@@ -40,10 +40,10 @@ export function Kicker({
   return (
     <div
       style={{
-        fontFamily: RK.mono,
-        fontSize: 10,
+        fontSize: 12,
+        fontWeight: 510,
         textTransform: "uppercase",
-        letterSpacing: 0.8,
+        letterSpacing: 0.6,
         color: tone === "accent" ? RK.accent : RK.ink3,
       }}
     >
@@ -52,7 +52,7 @@ export function Kicker({
   );
 }
 
-// ─── Field label — tiny uppercase mono (matches HeroMockUI field labels) ─────
+// ─── Field label ─────────────────────────────────────────────────────────────
 
 export function RKLabel({
   htmlFor,
@@ -66,11 +66,9 @@ export function RKLabel({
       htmlFor={htmlFor}
       style={{
         display: "block",
-        fontFamily: RK.mono,
-        fontSize: 10,
-        textTransform: "uppercase",
-        letterSpacing: 0.5,
-        color: RK.ink3,
+        fontSize: 13,
+        fontWeight: 510,
+        color: RK.ink2,
       }}
     >
       {children}
@@ -78,7 +76,7 @@ export function RKLabel({
   );
 }
 
-// ─── Input — blueprint field: mono value, paper bg, accent focus ring ────────
+// ─── Input — Linear text field: subtle surface, accent focus ring ────────────
 
 export const RKInput = forwardRef<
   HTMLInputElement,
@@ -101,19 +99,18 @@ export const RKInput = forwardRef<
       }}
       style={{
         width: "100%",
-        fontFamily: RK.mono,
-        fontSize: 13,
+        fontFamily: RK.sans,
+        fontSize: 14,
         color: RK.ink,
-        background: RK.paper,
+        background: "color-mix(in oklab, var(--rk-ink) 2%, transparent)",
         border: `1px solid ${borderColor}`,
-        borderRadius: 3,
-        padding: "9px 11px",
+        borderRadius: 6,
+        padding: "10px 12px",
         outline: "none",
-        letterSpacing: 0.2,
         boxShadow: focused
           ? `0 0 0 3px color-mix(in oklab, ${
               invalid ? RK.err : RK.accent
-            } 16%, transparent)`
+            } 18%, transparent)`
           : "none",
         transition: "border-color 120ms, box-shadow 120ms",
         ...style,
@@ -122,7 +119,7 @@ export const RKInput = forwardRef<
   );
 });
 
-// ─── Bracket button — bordered mono, accent / outline variants ───────────────
+// ─── Button — accent (primary indigo) / ghost variants ───────────────────────
 
 export function BracketButton({
   children,
@@ -137,28 +134,25 @@ export function BracketButton({
   block?: boolean;
   size?: "sm" | "md";
 }) {
-  const padding = size === "md" ? "10px 14px" : "6px 10px";
-  const fontSize = size === "md" ? 12.5 : 11;
+  const padding = size === "md" ? "10px 16px" : "7px 12px";
+  const fontSize = size === "md" ? 14 : 13;
   return (
     <button
       {...props}
-      className={["rk-btn", accent ? "rk-btn-accent" : "", className]
+      className={["ln-btn", accent ? "ln-btn-primary" : "ln-btn-ghost", className]
         .filter(Boolean)
         .join(" ")}
       style={{
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
-        gap: 7,
+        gap: 8,
         width: block ? "100%" : "auto",
-        border: `1px solid ${accent ? RK.accent : RK.rule}`,
-        background: accent ? RK.accentSoft : "transparent",
-        color: accent ? RK.accent : RK.ink2,
         padding,
-        borderRadius: 3,
-        fontFamily: RK.mono,
+        borderRadius: 6,
+        fontFamily: RK.sans,
         fontSize,
-        letterSpacing: 0.3,
+        fontWeight: 510,
         cursor: "pointer",
         ...style,
       }}
@@ -168,11 +162,11 @@ export function BracketButton({
   );
 }
 
-// ─── Divider with centered mono label ────────────────────────────────────────
+// ─── Divider with centered label ─────────────────────────────────────────────
 
 export function RKDivider({ label }: { label: string }) {
   return (
-    <div style={{ position: "relative", margin: "18px 0" }}>
+    <div style={{ position: "relative", margin: "20px 0" }}>
       <div
         style={{
           position: "absolute",
@@ -187,11 +181,9 @@ export function RKDivider({ label }: { label: string }) {
         <span
           style={{
             background: RK.surface,
-            padding: "0 10px",
-            fontFamily: RK.mono,
-            fontSize: 9.5,
-            textTransform: "uppercase",
-            letterSpacing: 0.6,
+            padding: "0 12px",
+            fontFamily: RK.sans,
+            fontSize: 12,
             color: RK.ink3,
           }}
         >
@@ -208,10 +200,10 @@ export function RKError({ children }: { children: ReactNode }) {
   return (
     <p
       style={{
-        fontFamily: RK.mono,
-        fontSize: 10,
-        letterSpacing: 0.3,
+        fontFamily: RK.sans,
+        fontSize: 12.5,
         color: RK.err,
+        margin: 0,
       }}
     >
       {children}
@@ -219,7 +211,7 @@ export function RKError({ children }: { children: ReactNode }) {
   );
 }
 
-// ─── Page heading block (kicker + title + subtitle) ──────────────────────────
+// ─── Page heading block (eyebrow + title + subtitle) ─────────────────────────
 
 export function RKHeading({
   kicker,
@@ -231,14 +223,14 @@ export function RKHeading({
   subtitle: string;
 }) {
   return (
-    <div style={{ marginBottom: 22, display: "flex", flexDirection: "column", gap: 8 }}>
+    <div style={{ marginBottom: 24, display: "flex", flexDirection: "column", gap: 8 }}>
       <Kicker tone="accent">{kicker}</Kicker>
       <h2
         style={{
           fontFamily: RK.sans,
-          fontSize: 22,
-          fontWeight: 500,
-          letterSpacing: -0.4,
+          fontSize: 24,
+          fontWeight: 510,
+          letterSpacing: "-0.5px",
           lineHeight: 1.15,
           color: RK.ink,
           margin: 0,
@@ -249,8 +241,8 @@ export function RKHeading({
       <p
         style={{
           fontFamily: RK.sans,
-          fontSize: 13,
-          color: RK.ink2,
+          fontSize: 14.5,
+          color: RK.ink3,
           lineHeight: 1.55,
           margin: 0,
         }}
@@ -265,7 +257,7 @@ export function RKHeading({
 
 export function GoogleMark() {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
       <path
         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
         fill="#4285F4"

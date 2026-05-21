@@ -131,11 +131,10 @@ export default function SignUpPage() {
             style={{
               border: `1px solid ${RK.err}`,
               background: RK.errSoft,
-              borderRadius: 3,
-              padding: "9px 11px",
-              fontFamily: RK.mono,
-              fontSize: 11,
-              letterSpacing: 0.2,
+              borderRadius: 6,
+              padding: "10px 12px",
+              fontFamily: RK.sans,
+              fontSize: 13,
               color: RK.err,
             }}
           >
@@ -151,15 +150,14 @@ export default function SignUpPage() {
 
       <p
         style={{
-          marginTop: 18,
+          marginTop: 20,
           textAlign: "center",
-          fontFamily: RK.mono,
-          fontSize: 11,
-          letterSpacing: 0.2,
+          fontFamily: RK.sans,
+          fontSize: 13,
           color: RK.ink3,
         }}
       >
-        already have an account?{" "}
+        Already have an account?{" "}
         <Link
           href="/sign-in"
           style={{ color: RK.accent, textDecoration: "none" }}

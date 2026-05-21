@@ -106,17 +106,17 @@ export function App2Sidebar() {
     <Sidebar variant="inset">
       <SidebarHeader className="px-4 py-3">
         <span
-          className="font-semibold"
           style={{
-            fontFamily: RK.mono,
-            fontSize: 13,
-            letterSpacing: 0.5,
+            fontFamily: RK.sans,
+            fontSize: 15,
+            fontWeight: 590,
+            letterSpacing: "-0.3px",
             color: RK.ink,
           }}
         >
           resitly
           <span style={{ color: RK.accent }}>.</span>
-          <span style={{ color: RK.ink3, marginLeft: 6, fontSize: 10 }}>v2</span>
+          <span style={{ color: RK.ink3, marginLeft: 6, fontSize: 11, fontWeight: 510 }}>v2</span>
         </span>
       </SidebarHeader>
 
@@ -125,10 +125,11 @@ export function App2Sidebar() {
           <SidebarGroup key={group.label}>
             <SidebarGroupLabel
               style={{
-                fontFamily: RK.mono,
-                fontSize: 9,
+                fontFamily: RK.sans,
+                fontSize: 11,
+                fontWeight: 510,
                 textTransform: "uppercase",
-                letterSpacing: 1,
+                letterSpacing: 0.6,
                 color: RK.ink3,
               }}
             >
@@ -146,12 +147,13 @@ export function App2Sidebar() {
                         asChild
                         isActive={isActive}
                         style={{
-                          fontFamily: RK.mono,
-                          fontSize: 11.5,
+                          fontFamily: RK.sans,
+                          fontSize: 14,
+                          fontWeight: 510,
                           borderLeft: isActive
                             ? `2px solid ${RK.accent}`
                             : "2px solid transparent",
-                          borderRadius: 3,
+                          borderRadius: 6,
                         }}
                       >
                         <Link href={item.href}>
@@ -181,10 +183,10 @@ export function App2Sidebar() {
                     className="size-8 flex items-center justify-center text-[11px] font-semibold shrink-0"
                     style={{
                       borderRadius: "50%",
-                      background: RK.rule2,
+                      background: RK.accentSoft,
                       border: `1px solid ${RK.rule}`,
-                      color: RK.ink2,
-                      fontFamily: RK.mono,
+                      color: RK.accent,
+                      fontFamily: RK.sans,
                     }}
                   >
                     {initials}
@@ -192,13 +194,13 @@ export function App2Sidebar() {
                   <div className="flex flex-col gap-0.5 leading-none min-w-0">
                     <span
                       className="truncate"
-                      style={{ fontFamily: RK.mono, fontSize: 12, color: RK.ink }}
+                      style={{ fontFamily: RK.sans, fontSize: 13, fontWeight: 510, color: RK.ink }}
                     >
                       {userName}
                     </span>
                     <span
                       className="truncate"
-                      style={{ fontFamily: RK.mono, fontSize: 10, color: RK.ink3 }}
+                      style={{ fontFamily: RK.sans, fontSize: 12, color: RK.ink3 }}
                     >
                       {userEmail}
                     </span>

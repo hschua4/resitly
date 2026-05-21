@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import {
   FileText,
@@ -10,97 +10,71 @@ import {
   Building2,
   ShoppingBag,
   ArrowRight,
+  Sparkles,
 } from "lucide-react";
 
-// ─── RK design tokens (server-safe; resolved via CSS vars in globals.css) ───
+// ─── Linear design tokens (resolved via CSS vars in globals.css) ─────────────
 
-const RK = {
+const LN = {
   ink: "var(--rk-ink)",
   ink2: "var(--rk-ink2)",
   ink3: "var(--rk-ink3)",
   rule: "var(--rk-rule)",
   rule2: "var(--rk-rule2)",
-  paper: "var(--rk-paper)",
-  paper2: "var(--rk-paper2)",
+  bg: "var(--rk-paper)",
   surface: "var(--rk-surface)",
+  elevated: "var(--rk-paper2)",
   hi: "var(--rk-hi)",
   accent: "var(--rk-accent)",
   accentSoft: "var(--rk-accent-soft)",
+  brand: "#5e6ad2",
   ok: "var(--rk-ok)",
   okSoft: "var(--rk-ok-soft)",
-  warn: "var(--rk-warn)",
-  warnSoft: "var(--rk-warn-soft)",
-  mono: "var(--rk-mono)",
-  sans: "var(--rk-sans)",
 } as const;
 
-type Tone = "ink" | "ok" | "warn" | "accent";
+// ─── Primitives ──────────────────────────────────────────────────────────────
 
-// ─── Primitive: bracketed mono link/button ──────────────────────────────────
-
-function BracketLink({
-  href,
-  children,
-  accent,
-  block,
-  size = "sm",
-}: {
-  href: string;
-  children: ReactNode;
-  accent?: boolean;
-  block?: boolean;
-  size?: "sm" | "md";
-}) {
-  const padding = size === "md" ? "9px 14px" : "5px 10px";
-  const fontSize = size === "md" ? 12.5 : 11;
-  return (
-    <Link
-      href={href}
-      style={{
-        display: block ? "flex" : "inline-flex",
-        alignItems: "center",
-        gap: 6,
-        width: block ? "100%" : "auto",
-        justifyContent: block ? "center" : "flex-start",
-        border: `1px solid ${accent ? RK.accent : RK.rule}`,
-        background: accent ? RK.accentSoft : "transparent",
-        color: accent ? RK.accent : RK.ink2,
-        padding,
-        borderRadius: 3,
-        fontFamily: RK.mono,
-        fontSize,
-        letterSpacing: 0.3,
-        textDecoration: "none",
-        transition: "background 120ms, border-color 120ms, color 120ms",
-      }}
-    >
-      {children}
-    </Link>
-  );
-}
-
-// ─── Primitive: pill ────────────────────────────────────────────────────────
-
-function Pill({ tone = "ink", children }: { tone?: Tone; children: ReactNode }) {
-  const map: Record<Tone, [string, string, string]> = {
-    ink: [RK.paper2, RK.ink2, RK.rule],
-    ok: [RK.okSoft, RK.ok, RK.ok],
-    warn: [RK.warnSoft, RK.warn, RK.warn],
-    accent: [RK.accentSoft, RK.accent, RK.accent],
-  };
-  const [bg, fg, br] = map[tone];
+function Eyebrow({ children }: { children: ReactNode }) {
   return (
     <span
       style={{
-        display: "inline-block",
-        padding: "2px 8px",
-        borderRadius: 999,
-        background: bg,
-        color: fg,
-        border: `1px solid ${br}`,
-        fontFamily: RK.mono,
-        fontSize: 9.5,
-        letterSpacing: 0.4,
+        fontSize: 12,
+        fontWeight: 510,
+        textTransform: "uppercase",
+        letterSpacing: 0.6,
+        color: LN.accent,
+      }}
+    >
+      {children}
+    </span>
+  );
+}
+
+function Pill({
+  children,
+  tone = "neutral",
+}: {
+  children: ReactNode;
+  tone?: "neutral" | "ok" | "accent";
+}) {
+  const map = {
+    neutral: { bg: "transparent", fg: LN.ink2, br: LN.rule },
+    ok: { bg: LN.okSoft, fg: LN.ok, br: "transparent" },
+    accent: { bg: LN.accentSoft, fg: LN.accent, br: "transparent" },
+  }[tone];
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        padding: "2px 10px",
+        borderRadius: 9999,
+        background: map.bg,
+        color: map.fg,
+        border: `1px solid ${map.br}`,
+        fontSize: 12,
+        fontWeight: 510,
         lineHeight: 1.5,
       }}
     >
@@ -109,33 +83,67 @@ function Pill({ tone = "ink", children }: { tone?: Tone; children: ReactNode }) 
   );
 }
 
-// ─── Primitive: kicker (uppercase mono eyebrow) ─────────────────────────────
-
-function Kicker({ children, tone = "ink3" }: { children: ReactNode; tone?: "ink3" | "accent" }) {
+function PrimaryButton({
+  href,
+  children,
+}: {
+  href: string;
+  children: ReactNode;
+}) {
   return (
-    <div
+    <Link
+      href={href}
+      className="ln-btn ln-btn-primary"
       style={{
-        fontFamily: RK.mono,
-        fontSize: 10,
-        textTransform: "uppercase",
-        letterSpacing: 0.8,
-        color: tone === "accent" ? RK.accent : RK.ink3,
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 7,
+        padding: "9px 18px",
+        borderRadius: 6,
+        fontSize: 14,
+        fontWeight: 510,
+        textDecoration: "none",
       }}
     >
       {children}
-    </div>
+    </Link>
   );
 }
 
-// ─── Primitive: section heading ─────────────────────────────────────────────
+function GhostButton({
+  href,
+  children,
+}: {
+  href: string;
+  children: ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      className="ln-btn ln-btn-ghost"
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 7,
+        padding: "9px 18px",
+        borderRadius: 6,
+        fontSize: 14,
+        fontWeight: 510,
+        textDecoration: "none",
+      }}
+    >
+      {children}
+    </Link>
+  );
+}
 
 function SectionHeading({
-  kicker,
+  eyebrow,
   title,
   subtitle,
   align = "left",
 }: {
-  kicker?: string;
+  eyebrow?: string;
   title: ReactNode;
   subtitle?: ReactNode;
   align?: "left" | "center";
@@ -144,34 +152,21 @@ function SectionHeading({
     <div
       style={{
         textAlign: align,
-        marginBottom: 48,
+        marginBottom: 56,
         display: "flex",
         flexDirection: "column",
-        gap: 10,
+        gap: 14,
         alignItems: align === "center" ? "center" : "flex-start",
       }}
     >
-      {kicker && (
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span
-            style={{
-              width: 18,
-              height: 1,
-              background: RK.rule,
-              display: "inline-block",
-            }}
-          />
-          <Kicker tone="accent">{kicker}</Kicker>
-        </div>
-      )}
+      {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
       <h2
         style={{
-          fontFamily: RK.sans,
-          fontSize: "clamp(28px, 4vw, 40px)",
-          fontWeight: 500,
-          color: RK.ink,
-          letterSpacing: -0.5,
-          lineHeight: 1.1,
+          fontSize: "clamp(28px, 4vw, 44px)",
+          fontWeight: 510,
+          color: LN.ink,
+          letterSpacing: "-0.96px",
+          lineHeight: 1.05,
           margin: 0,
           maxWidth: 720,
         }}
@@ -181,9 +176,9 @@ function SectionHeading({
       {subtitle && (
         <p
           style={{
-            fontFamily: RK.sans,
-            fontSize: 14.5,
-            color: RK.ink2,
+            fontSize: 17,
+            fontWeight: 400,
+            color: LN.ink3,
             lineHeight: 1.6,
             margin: 0,
             maxWidth: 560,
@@ -196,7 +191,7 @@ function SectionHeading({
   );
 }
 
-// ─── Navbar ─────────────────────────────────────────────────────────────────
+// ─── Navbar ──────────────────────────────────────────────────────────────────
 
 function Navbar() {
   return (
@@ -205,46 +200,44 @@ function Navbar() {
         position: "sticky",
         top: 0,
         zIndex: 50,
-        background: `color-mix(in oklab, ${RK.paper} 85%, transparent)`,
-        backdropFilter: "blur(8px)",
-        borderBottom: `1px solid ${RK.rule}`,
+        background: `color-mix(in oklab, ${LN.bg} 80%, transparent)`,
+        backdropFilter: "blur(12px)",
+        borderBottom: `1px solid ${LN.rule2}`,
       }}
     >
       <div
         className="mx-auto flex max-w-6xl items-center justify-between"
-        style={{ padding: "10px 24px", height: 52 }}
+        style={{ padding: "0 24px", height: 56 }}
       >
         <Link
           href="/"
           style={{
-            fontFamily: RK.mono,
-            fontSize: 13,
-            letterSpacing: 0.5,
-            color: RK.ink,
-            fontWeight: 600,
+            fontSize: 16,
+            fontWeight: 590,
+            letterSpacing: "-0.3px",
+            color: LN.ink,
             textDecoration: "none",
           }}
         >
-          resitly<span style={{ color: RK.accent }}>.</span>
+          resitly<span style={{ color: LN.accent }}>.</span>
         </Link>
 
-        <nav className="hidden md:flex" style={{ gap: 4 }}>
+        <nav className="hidden items-center md:flex" style={{ gap: 4 }}>
           {[
-            { label: "product", href: "#product" },
-            { label: "features", href: "#features" },
-            { label: "pricing", href: "#pricing" },
+            { label: "Product", href: "#product" },
+            { label: "Features", href: "#features" },
+            { label: "Pricing", href: "#pricing" },
           ].map((l) => (
             <Link
               key={l.href}
               href={l.href}
+              className="ln-navlink"
               style={{
-                fontFamily: RK.mono,
-                fontSize: 11,
-                color: RK.ink2,
-                padding: "4px 10px",
-                borderRadius: 3,
+                fontSize: 14,
+                fontWeight: 510,
+                padding: "6px 12px",
+                borderRadius: 6,
                 textDecoration: "none",
-                letterSpacing: 0.3,
               }}
             >
               {l.label}
@@ -255,83 +248,47 @@ function Navbar() {
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <Link
             href="/sign-in"
+            className="ln-navlink"
             style={{
-              fontFamily: RK.mono,
-              fontSize: 11,
-              color: RK.ink2,
-              padding: "5px 10px",
+              fontSize: 14,
+              fontWeight: 510,
+              padding: "6px 12px",
+              borderRadius: 6,
               textDecoration: "none",
-              letterSpacing: 0.3,
             }}
           >
-            sign in
+            Sign in
           </Link>
-          <BracketLink href="/sign-up" accent>
-            ＋ start free
-          </BracketLink>
+          <PrimaryButton href="/sign-up">Start free</PrimaryButton>
         </div>
       </div>
     </header>
   );
 }
 
-// ─── Hero wireframe mock ────────────────────────────────────────────────────
+// ─── Hero product mock ───────────────────────────────────────────────────────
 
-function ReceiptHatch({ height = 240 }: { height?: number }) {
-  const id = "rk-landing-hatch";
-  return (
-    <svg
-      width="100%"
-      height={height}
-      style={{ display: "block", background: RK.surface }}
-      preserveAspectRatio="none"
-      viewBox={`0 0 220 ${height}`}
-    >
-      <defs>
-        <pattern
-          id={id}
-          width="6"
-          height="6"
-          patternUnits="userSpaceOnUse"
-          patternTransform="rotate(45)"
-        >
-          <line x1="0" y1="0" x2="0" y2="6" stroke={RK.rule} strokeWidth="1" />
-        </pattern>
-      </defs>
-      {/* Header strip */}
-      <rect x="14" y="18" width="192" height="14" fill={RK.rule2} />
-      <rect x="14" y="38" width="120" height="8" fill={RK.rule2} />
-      {/* Body hatch */}
-      <rect x="14" y="60" width="192" height={height - 130} fill={`url(#${id})`} />
-      {/* Footer */}
-      <rect x="14" y={height - 60} width="192" height="1" fill={RK.rule} />
-      <rect x="14" y={height - 50} width="80" height="8" fill={RK.rule2} />
-      <rect x="150" y={height - 50} width="56" height="10" fill={RK.ink2} opacity="0.7" />
-      <rect x="14" y={height - 32} width="140" height="6" fill={RK.rule2} />
-      <rect x="14" y={height - 22} width="100" height="6" fill={RK.rule2} />
-    </svg>
-  );
-}
-
-function HeroMockUI() {
-  const fields: [string, string, Tone | undefined][] = [
-    ["Vendor", "99 Speedmart", undefined],
-    ["Date", "12 Apr 2026", undefined],
-    ["Subtotal", "RM 45.10", undefined],
-    ["SST · 6%", "RM 2.70", "accent"],
-    ["Total", "RM 47.80", undefined],
+function HeroMock() {
+  const fields: [string, string, boolean][] = [
+    ["Vendor", "99 Speedmart Sdn Bhd", false],
+    ["Date", "12 Apr 2026", false],
+    ["Subtotal", "RM 45.10", false],
+    ["SST · 6%", "RM 2.70", true],
+    ["Total", "RM 47.80", false],
   ];
 
   return (
     <div
       style={{
         position: "relative",
-        margin: "56px auto 0",
-        maxWidth: 880,
-        background: RK.surface,
-        border: `1px solid ${RK.rule}`,
-        borderRadius: 4,
-        boxShadow: "0 1px 0 0 rgba(0,0,0,0.02), 0 24px 48px -24px rgba(0,0,0,0.18)",
+        margin: "64px auto 0",
+        maxWidth: 920,
+        background: LN.surface,
+        border: `1px solid ${LN.rule}`,
+        borderRadius: 12,
+        overflow: "hidden",
+        boxShadow:
+          "rgba(0,0,0,0.4) 0px 2px 4px, rgba(0,0,0,0.3) 0px 24px 60px -24px",
       }}
     >
       {/* Window chrome */}
@@ -339,158 +296,130 @@ function HeroMockUI() {
         style={{
           display: "flex",
           alignItems: "center",
-          gap: 6,
-          height: 30,
-          padding: "0 12px",
-          borderBottom: `1px solid ${RK.rule}`,
-          fontFamily: RK.mono,
-          fontSize: 10,
-          color: RK.ink3,
-          letterSpacing: 0.3,
+          gap: 8,
+          height: 38,
+          padding: "0 14px",
+          borderBottom: `1px solid ${LN.rule}`,
+          background: LN.elevated,
+          fontSize: 12,
+          color: LN.ink3,
         }}
       >
-        <span style={{ width: 8, height: 8, borderRadius: 999, background: RK.rule }} />
-        <span style={{ width: 8, height: 8, borderRadius: 999, background: RK.rule }} />
-        <span style={{ width: 8, height: 8, borderRadius: 999, background: RK.rule }} />
+        <span style={{ width: 9, height: 9, borderRadius: 999, background: LN.rule }} />
+        <span style={{ width: 9, height: 9, borderRadius: 999, background: LN.rule }} />
+        <span style={{ width: 9, height: 9, borderRadius: 999, background: LN.rule }} />
         <span style={{ marginLeft: 12 }}>resitly.app / inbox / IMG_0421.jpg</span>
         <span style={{ flex: 1 }} />
-        <Pill tone="ok">extraction · complete</Pill>
+        <Pill tone="ok">
+          <span style={{ width: 6, height: 6, borderRadius: 999, background: LN.ok }} />
+          extracted
+        </Pill>
       </div>
 
-      {/* Two-column body */}
       <div
-        className="grid grid-cols-1 md:grid-cols-[280px_1fr]"
-        style={{ minHeight: 360 }}
+        className="grid grid-cols-1 md:grid-cols-[300px_1fr]"
+        style={{ minHeight: 380 }}
       >
-        {/* Left — receipt scan */}
+        {/* Left — receipt preview */}
         <div
           style={{
-            position: "relative",
-            padding: 18,
-            borderRight: `1px solid ${RK.rule}`,
-            background: RK.paper2,
+            padding: 22,
+            borderRight: `1px solid ${LN.rule}`,
+            background: LN.bg,
           }}
         >
-          <div style={{ position: "relative" }}>
-            <ReceiptHatch height={300} />
+          <div
+            style={{
+              position: "relative",
+              height: "100%",
+              minHeight: 300,
+              borderRadius: 8,
+              border: `1px solid ${LN.rule}`,
+              background: `linear-gradient(180deg, ${LN.elevated}, ${LN.surface})`,
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
+              padding: 18,
+            }}
+          >
+            <div style={{ height: 12, width: "60%", background: LN.hi, borderRadius: 3 }} />
+            <div style={{ height: 8, width: "40%", background: LN.rule2, borderRadius: 3 }} />
+            <div style={{ height: 1, background: LN.rule, margin: "8px 0" }} />
+            {[0.9, 0.7, 0.8, 0.55, 0.75].map((w, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: 12,
+                }}
+              >
+                <div style={{ height: 8, width: `${w * 60}%`, background: LN.rule2, borderRadius: 3 }} />
+                <div style={{ height: 8, width: 40, background: LN.rule2, borderRadius: 3 }} />
+              </div>
+            ))}
+            <div style={{ flex: 1 }} />
+            {/* detection highlight */}
             <div
               style={{
                 position: "absolute",
-                top: 6,
-                left: 6,
-                fontFamily: RK.mono,
-                fontSize: 8.5,
-                color: RK.ink3,
-                letterSpacing: 0.4,
-                background: RK.surface,
-                padding: "1px 5px",
-                border: `1px solid ${RK.rule}`,
-              }}
-            >
-              IMG_0421.jpg
-            </div>
-            {/* Detection box overlays */}
-            <div
-              style={{
-                position: "absolute",
-                top: 12,
+                top: 14,
                 left: 14,
-                width: 130,
-                height: 22,
-                border: `1.5px dashed ${RK.accent}`,
-                background: RK.accentSoft,
-                opacity: 0.85,
-              }}
-            />
-            <div
-              style={{
-                position: "absolute",
-                bottom: 24,
-                right: 18,
-                width: 64,
+                width: "62%",
                 height: 18,
-                border: `1.5px solid ${RK.accent}`,
-                background: RK.accentSoft,
-                opacity: 0.85,
+                borderRadius: 4,
+                border: `1.5px solid ${LN.accent}`,
+                background: LN.accentSoft,
               }}
             />
           </div>
         </div>
 
         {/* Right — extracted fields */}
-        <div style={{ padding: "18px 22px", display: "flex", flexDirection: "column", gap: 14 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ padding: "22px 24px", display: "flex", flexDirection: "column", gap: 18 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
             <div>
-              <Kicker>extracted · 1.2s</Kicker>
-              <div
-                style={{
-                  fontFamily: RK.sans,
-                  fontSize: 18,
-                  color: RK.ink,
-                  fontWeight: 500,
-                  marginTop: 2,
-                }}
-              >
+              <div style={{ fontSize: 12, color: LN.ink3, marginBottom: 4 }}>Extracted in 1.2s</div>
+              <div style={{ fontSize: 20, fontWeight: 590, color: LN.ink, letterSpacing: "-0.24px" }}>
                 99 Speedmart Sdn Bhd
               </div>
             </div>
-            <Pill tone="accent">groceries</Pill>
+            <Pill tone="accent">Groceries</Pill>
           </div>
 
-          <div style={{ border: `1px solid ${RK.rule}`, background: RK.paper }}>
-            {fields.map(([label, value, tone], i) => (
+          <div style={{ border: `1px solid ${LN.rule}`, borderRadius: 8, overflow: "hidden" }}>
+            {fields.map(([label, value, accent], i) => (
               <div
                 key={label}
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "100px 1fr auto",
-                  gap: 10,
+                  gridTemplateColumns: "110px 1fr auto",
+                  gap: 12,
                   alignItems: "center",
-                  padding: "8px 12px",
-                  borderBottom: i === fields.length - 1 ? "none" : `1px solid ${RK.rule2}`,
+                  padding: "11px 14px",
+                  borderBottom: i === fields.length - 1 ? "none" : `1px solid ${LN.rule2}`,
+                  background: i % 2 ? "transparent" : LN.elevated,
                 }}
               >
+                <span style={{ fontSize: 13, color: LN.ink3 }}>{label}</span>
                 <span
                   style={{
-                    fontFamily: RK.mono,
-                    fontSize: 10,
-                    textTransform: "uppercase",
-                    letterSpacing: 0.4,
-                    color: RK.ink3,
-                  }}
-                >
-                  {label}
-                </span>
-                <span
-                  style={{
-                    fontFamily: RK.mono,
-                    fontSize: 12,
-                    color: tone === "accent" ? RK.accent : RK.ink,
+                    fontSize: 14,
+                    fontWeight: 510,
+                    color: accent ? LN.accent : LN.ink,
                   }}
                 >
                   {value}
                 </span>
-                <span style={{ display: "inline-flex", gap: 2 }}>
-                  {[1, 2, 3].map((n) => (
-                    <span
-                      key={n}
-                      style={{
-                        width: 6,
-                        height: 8,
-                        background: RK.ok,
-                        border: `1px solid ${RK.ok}`,
-                      }}
-                    />
-                  ))}
-                </span>
+                <Check className="size-3.5" style={{ color: LN.ok }} />
               </div>
             ))}
           </div>
 
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            <Pill>auto · category</Pill>
-            <Pill>auto · sst</Pill>
-            <Pill tone="ok">3/3 confidence</Pill>
+            <Pill>Auto category</Pill>
+            <Pill>Auto SST</Pill>
+            <Pill tone="ok">High confidence</Pill>
           </div>
         </div>
       </div>
@@ -498,7 +427,7 @@ function HeroMockUI() {
   );
 }
 
-// ─── How It Works ───────────────────────────────────────────────────────────
+// ─── How it works ────────────────────────────────────────────────────────────
 
 const HOW_IT_WORKS_STEPS = [
   {
@@ -526,78 +455,49 @@ function HowItWorks() {
     <section id="product" style={{ padding: "96px 24px" }}>
       <div className="mx-auto max-w-6xl">
         <SectionHeading
-          kicker="how it works"
+          eyebrow="How it works"
           title="Three steps to zero manual entry"
           align="center"
         />
-
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-            gap: 0,
-            border: `1px solid ${RK.rule}`,
-            background: RK.surface,
-          }}
+          className="grid grid-cols-1 md:grid-cols-3"
+          style={{ gap: 16 }}
         >
-          {HOW_IT_WORKS_STEPS.map((step, i) => (
+          {HOW_IT_WORKS_STEPS.map((step) => (
             <div
               key={step.number}
+              className="ln-card ln-card-hover"
               style={{
-                position: "relative",
-                padding: "28px 24px 32px",
-                borderRight:
-                  i === HOW_IT_WORKS_STEPS.length - 1 ? "none" : `1px solid ${RK.rule}`,
+                background: "color-mix(in oklab, var(--rk-ink) 2%, transparent)",
+                border: `1px solid ${LN.rule}`,
+                borderRadius: 12,
+                padding: "28px 24px 30px",
               }}
             >
               <div
                 style={{
-                  fontFamily: RK.mono,
-                  fontSize: 10,
-                  letterSpacing: 0.6,
-                  color: RK.ink3,
-                  textTransform: "uppercase",
+                  fontSize: 13,
+                  fontWeight: 590,
+                  color: LN.accent,
                   marginBottom: 16,
                 }}
               >
-                step / {step.number}
+                {step.number}
               </div>
               <div
                 style={{
-                  fontFamily: RK.sans,
                   fontSize: 20,
-                  fontWeight: 500,
-                  color: RK.ink,
+                  fontWeight: 590,
+                  color: LN.ink,
+                  letterSpacing: "-0.24px",
                   marginBottom: 8,
                 }}
               >
                 {step.title}
               </div>
-              <p
-                style={{
-                  fontFamily: RK.sans,
-                  fontSize: 13.5,
-                  color: RK.ink2,
-                  lineHeight: 1.6,
-                  margin: 0,
-                }}
-              >
+              <p style={{ fontSize: 15, color: LN.ink3, lineHeight: 1.6, margin: 0 }}>
                 {step.description}
               </p>
-              {/* Connector dot at top-right corner */}
-              <span
-                aria-hidden
-                style={{
-                  position: "absolute",
-                  top: -3,
-                  right: i === HOW_IT_WORKS_STEPS.length - 1 ? -3 : undefined,
-                  left: i === HOW_IT_WORKS_STEPS.length - 1 ? undefined : -3,
-                  width: 6,
-                  height: 6,
-                  background: RK.accent,
-                  borderRadius: 999,
-                }}
-              />
             </div>
           ))}
         </div>
@@ -606,7 +506,7 @@ function HowItWorks() {
   );
 }
 
-// ─── Core Features ──────────────────────────────────────────────────────────
+// ─── Core features ───────────────────────────────────────────────────────────
 
 const FEATURES = [
   {
@@ -640,75 +540,49 @@ function CoreFeatures() {
     <section id="features" style={{ padding: "96px 24px" }}>
       <div className="mx-auto max-w-6xl">
         <SectionHeading
-          kicker="features"
+          eyebrow="Features"
           title="Everything you need. Nothing you don't."
           subtitle="No bloat, no steep learning curve — just the tools Malaysian SMEs actually use day to day."
         />
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: 16,
-          }}
-        >
-          {FEATURES.map(({ icon: Icon, title, description }, i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 16 }}>
+          {FEATURES.map(({ icon: Icon, title, description }) => (
             <div
               key={title}
+              className="ln-card ln-card-hover"
               style={{
-                background: RK.surface,
-                border: `1px solid ${RK.rule}`,
-                padding: 24,
-                borderRadius: 4,
-                position: "relative",
+                background: "color-mix(in oklab, var(--rk-ink) 2%, transparent)",
+                border: `1px solid ${LN.rule}`,
+                borderRadius: 12,
+                padding: 26,
               }}
             >
               <div
                 style={{
-                  fontFamily: RK.mono,
-                  fontSize: 9.5,
-                  color: RK.ink3,
-                  letterSpacing: 0.5,
-                  marginBottom: 14,
-                }}
-              >
-                ／{String(i + 1).padStart(2, "0")}
-              </div>
-              <div
-                style={{
-                  width: 36,
-                  height: 36,
-                  border: `1px solid ${RK.rule}`,
-                  background: RK.paper2,
+                  width: 40,
+                  height: 40,
+                  border: `1px solid ${LN.rule}`,
+                  background: LN.accentSoft,
                   display: "grid",
                   placeItems: "center",
-                  borderRadius: 3,
-                  marginBottom: 14,
-                  color: RK.accent,
+                  borderRadius: 8,
+                  marginBottom: 16,
+                  color: LN.accent,
                 }}
               >
-                <Icon className="size-4" />
+                <Icon className="size-[18px]" />
               </div>
               <div
                 style={{
-                  fontFamily: RK.sans,
-                  fontSize: 15,
-                  fontWeight: 500,
-                  color: RK.ink,
+                  fontSize: 17,
+                  fontWeight: 590,
+                  color: LN.ink,
+                  letterSpacing: "-0.2px",
                   marginBottom: 6,
                 }}
               >
                 {title}
               </div>
-              <p
-                style={{
-                  fontFamily: RK.sans,
-                  fontSize: 13,
-                  color: RK.ink2,
-                  lineHeight: 1.6,
-                  margin: 0,
-                }}
-              >
+              <p style={{ fontSize: 14.5, color: LN.ink3, lineHeight: 1.6, margin: 0 }}>
                 {description}
               </p>
             </div>
@@ -719,7 +593,7 @@ function CoreFeatures() {
   );
 }
 
-// ─── Built for Malaysia ─────────────────────────────────────────────────────
+// ─── Built for Malaysia ──────────────────────────────────────────────────────
 
 const MALAYSIA_POINTS = [
   "Reads BM, English, and Chinese receipts",
@@ -734,94 +608,53 @@ function BuiltForMalaysia() {
       <div className="mx-auto max-w-6xl">
         <div
           style={{
-            background: RK.surface,
-            border: `1px solid ${RK.rule}`,
-            borderRadius: 4,
-            position: "relative",
+            background: LN.surface,
+            border: `1px solid ${LN.rule}`,
+            borderRadius: 16,
             overflow: "hidden",
           }}
         >
-          {/* Top metadata strip */}
-          <div
-            style={{
-              padding: "10px 24px",
-              borderBottom: `1px solid ${RK.rule}`,
-              background: RK.paper2,
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              fontFamily: RK.mono,
-              fontSize: 10,
-              color: RK.ink3,
-              letterSpacing: 0.5,
-              textTransform: "uppercase",
-            }}
-          >
-            <span>region · MY-12</span>
-            <span>built for malaysia</span>
-            <span>schema · v2.4</span>
-          </div>
-
-          <div
-            className="grid md:grid-cols-2"
-            style={{ gap: 0 }}
-          >
-            <div
-              style={{
-                padding: "40px 32px",
-                borderRight: `1px solid ${RK.rule}`,
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 40,
-                  marginBottom: 18,
-                  filter: "drop-shadow(0 1px 0 rgba(0,0,0,0.05))",
-                }}
-              >
-                🇲🇾
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2">
+            <div style={{ padding: "44px 36px" }}>
+              <div style={{ fontSize: 40, marginBottom: 20 }}>🇲🇾</div>
               <h2
                 style={{
-                  fontFamily: RK.sans,
-                  fontSize: "clamp(24px, 3.2vw, 32px)",
-                  fontWeight: 500,
-                  color: RK.ink,
-                  letterSpacing: -0.4,
-                  lineHeight: 1.15,
+                  fontSize: "clamp(24px, 3.2vw, 34px)",
+                  fontWeight: 510,
+                  color: LN.ink,
+                  letterSpacing: "-0.7px",
+                  lineHeight: 1.1,
                   margin: 0,
                 }}
               >
                 Built for Malaysia.
                 <br />
-                <span style={{ color: RK.ink3 }}>
-                  Most tools fail here. Resitly doesn&apos;t.
-                </span>
+                <span style={{ color: LN.ink3 }}>Most tools fail here. Resitly doesn&apos;t.</span>
               </h2>
               <p
                 style={{
-                  fontFamily: RK.sans,
-                  fontSize: 13.5,
-                  color: RK.ink2,
+                  fontSize: 15,
+                  color: LN.ink3,
                   lineHeight: 1.65,
-                  marginTop: 16,
-                  maxWidth: 460,
+                  marginTop: 18,
+                  maxWidth: 440,
                 }}
               >
-                Generic expense trackers can&apos;t read your mamak receipt. Resitly is
-                trained on real Malaysian receipts and understands the local tax system.
+                Generic expense trackers can&apos;t read your mamak receipt. Resitly is trained on
+                real Malaysian receipts and understands the local tax system.
               </p>
             </div>
 
             <ul
               style={{
                 margin: 0,
-                padding: "40px 32px",
+                padding: "44px 36px",
                 listStyle: "none",
                 display: "flex",
                 flexDirection: "column",
-                gap: 14,
-                background: RK.paper2,
+                gap: 4,
+                background: LN.elevated,
+                borderLeft: `1px solid ${LN.rule}`,
               }}
             >
               {MALAYSIA_POINTS.map((point, i) => (
@@ -829,51 +662,28 @@ function BuiltForMalaysia() {
                   key={point}
                   style={{
                     display: "flex",
-                    alignItems: "flex-start",
-                    gap: 12,
-                    paddingBottom: i === MALAYSIA_POINTS.length - 1 ? 0 : 14,
+                    alignItems: "center",
+                    gap: 14,
+                    padding: "14px 0",
                     borderBottom:
-                      i === MALAYSIA_POINTS.length - 1 ? "none" : `1px solid ${RK.rule2}`,
+                      i === MALAYSIA_POINTS.length - 1 ? "none" : `1px solid ${LN.rule2}`,
                   }}
                 >
                   <span
                     style={{
                       flexShrink: 0,
-                      width: 18,
-                      height: 18,
-                      border: `1px solid ${RK.accent}`,
-                      background: RK.accentSoft,
+                      width: 22,
+                      height: 22,
+                      background: LN.accentSoft,
                       display: "grid",
                       placeItems: "center",
-                      color: RK.accent,
-                      borderRadius: 3,
+                      color: LN.accent,
+                      borderRadius: 6,
                     }}
                   >
-                    <Check className="size-3" />
+                    <Check className="size-3.5" />
                   </span>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                    <span
-                      style={{
-                        fontFamily: RK.mono,
-                        fontSize: 9,
-                        color: RK.ink3,
-                        textTransform: "uppercase",
-                        letterSpacing: 0.6,
-                      }}
-                    >
-                      capability · {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span
-                      style={{
-                        fontFamily: RK.sans,
-                        fontSize: 14,
-                        color: RK.ink,
-                        lineHeight: 1.4,
-                      }}
-                    >
-                      {point}
-                    </span>
-                  </div>
+                  <span style={{ fontSize: 15, color: LN.ink, lineHeight: 1.4 }}>{point}</span>
                 </li>
               ))}
             </ul>
@@ -884,26 +694,23 @@ function BuiltForMalaysia() {
   );
 }
 
-// ─── Who It's For ───────────────────────────────────────────────────────────
+// ─── Who it's for ────────────────────────────────────────────────────────────
 
 const WHO_ITS_FOR = [
   {
     icon: User,
-    role: "freelancers",
     title: "Freelancers",
     description:
       "Stop manually logging expenses. Snap, upload, done — your records stay current.",
   },
   {
     icon: Building2,
-    role: "small business",
     title: "Small business owners",
     description:
       "Track spending without hiring a bookkeeper. Resitly handles the grunt work.",
   },
   {
     icon: ShoppingBag,
-    role: "ecommerce",
     title: "E-commerce sellers",
     description:
       "Organize supplier invoices and Shopee / Lazada receipts. Export when filing.",
@@ -914,69 +721,46 @@ function WhoItsFor() {
   return (
     <section style={{ padding: "96px 24px" }}>
       <div className="mx-auto max-w-6xl">
-        <SectionHeading kicker="for you" title="Who uses Resitly" align="center" />
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-            gap: 16,
-          }}
-        >
-          {WHO_ITS_FOR.map(({ icon: Icon, role, title, description }) => (
+        <SectionHeading eyebrow="For you" title="Who uses Resitly" align="center" />
+        <div className="grid grid-cols-1 md:grid-cols-3" style={{ gap: 16 }}>
+          {WHO_ITS_FOR.map(({ icon: Icon, title, description }) => (
             <div
               key={title}
+              className="ln-card ln-card-hover"
               style={{
-                background: RK.surface,
-                border: `1px solid ${RK.rule}`,
+                background: "color-mix(in oklab, var(--rk-ink) 2%, transparent)",
+                border: `1px solid ${LN.rule}`,
+                borderRadius: 12,
                 padding: 28,
-                borderRadius: 4,
               }}
             >
               <div
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
+                  width: 40,
+                  height: 40,
+                  border: `1px solid ${LN.rule}`,
+                  background: LN.elevated,
+                  display: "grid",
+                  placeItems: "center",
+                  color: LN.ink2,
+                  borderRadius: 8,
                   marginBottom: 18,
                 }}
               >
-                <div
-                  style={{
-                    width: 36,
-                    height: 36,
-                    border: `1px dashed ${RK.rule}`,
-                    background: RK.paper2,
-                    display: "grid",
-                    placeItems: "center",
-                    color: RK.ink2,
-                    borderRadius: 3,
-                  }}
-                >
-                  <Icon className="size-4" />
-                </div>
-                <Pill>{role}</Pill>
+                <Icon className="size-[18px]" />
               </div>
               <div
                 style={{
-                  fontFamily: RK.sans,
-                  fontSize: 16,
-                  fontWeight: 500,
-                  color: RK.ink,
+                  fontSize: 17,
+                  fontWeight: 590,
+                  color: LN.ink,
+                  letterSpacing: "-0.2px",
                   marginBottom: 6,
                 }}
               >
                 {title}
               </div>
-              <p
-                style={{
-                  fontFamily: RK.sans,
-                  fontSize: 13,
-                  color: RK.ink2,
-                  lineHeight: 1.6,
-                  margin: 0,
-                }}
-              >
+              <p style={{ fontSize: 14.5, color: LN.ink3, lineHeight: 1.6, margin: 0 }}>
                 {description}
               </p>
             </div>
@@ -987,7 +771,7 @@ function WhoItsFor() {
   );
 }
 
-// ─── Pricing ────────────────────────────────────────────────────────────────
+// ─── Pricing ─────────────────────────────────────────────────────────────────
 
 const PRICING_PLANS = [
   {
@@ -995,13 +779,8 @@ const PRICING_PLANS = [
     price: "RM 0",
     period: "/month",
     description: "Get started, no commitment.",
-    features: [
-      "20 receipts per month",
-      "Basic AI extraction",
-      "Manual categorization",
-      "7-day history",
-    ],
-    cta: "get started",
+    features: ["20 receipts per month", "Basic AI extraction", "Manual categorization", "7-day history"],
+    cta: "Get started",
     highlight: false,
   },
   {
@@ -1016,9 +795,9 @@ const PRICING_PLANS = [
       "Full receipt history",
       "Priority email support",
     ],
-    cta: "start pro trial",
+    cta: "Start Pro trial",
     highlight: true,
-    badge: "most popular",
+    badge: "Most popular",
   },
   {
     name: "Business",
@@ -1032,7 +811,7 @@ const PRICING_PLANS = [
       "Team seats (up to 5)",
       "Dedicated support",
     ],
-    cta: "contact sales",
+    cta: "Contact sales",
     highlight: false,
   },
 ] as const;
@@ -1042,114 +821,75 @@ function Pricing() {
     <section id="pricing" style={{ padding: "96px 24px" }}>
       <div className="mx-auto max-w-6xl">
         <SectionHeading
-          kicker="pricing"
+          eyebrow="Pricing"
           title="Simple, transparent pricing"
           subtitle="Start free, upgrade when you need more."
           align="center"
         />
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-            gap: 16,
-          }}
-        >
+        <div className="grid grid-cols-1 md:grid-cols-3" style={{ gap: 16 }}>
           {PRICING_PLANS.map((plan) => (
             <div
               key={plan.name}
               style={{
                 position: "relative",
-                background: RK.surface,
-                border: `1px solid ${plan.highlight ? RK.accent : RK.rule}`,
+                background: plan.highlight ? LN.surface : "color-mix(in oklab, var(--rk-ink) 2%, transparent)",
+                border: `1px solid ${plan.highlight ? LN.accent : LN.rule}`,
                 padding: 28,
-                borderRadius: 4,
+                borderRadius: 12,
                 display: "flex",
                 flexDirection: "column",
                 boxShadow: plan.highlight
-                  ? `0 0 0 4px color-mix(in oklab, ${RK.accent} 14%, transparent)`
+                  ? `0 0 0 4px color-mix(in oklab, ${LN.accent} 12%, transparent)`
                   : undefined,
               }}
             >
-              {plan.highlight && plan.badge && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: -10,
-                    left: 20,
-                  }}
-                >
-                  <Pill tone="accent">★ {plan.badge}</Pill>
+              {plan.highlight && "badge" in plan && plan.badge && (
+                <div style={{ position: "absolute", top: -11, left: 24 }}>
+                  <Pill tone="accent">
+                    <Sparkles className="size-3" />
+                    {plan.badge}
+                  </Pill>
                 </div>
               )}
 
               <div
                 style={{
-                  fontFamily: RK.mono,
-                  fontSize: 10,
-                  textTransform: "uppercase",
-                  letterSpacing: 0.6,
-                  color: plan.highlight ? RK.accent : RK.ink3,
-                  marginBottom: 8,
+                  fontSize: 13,
+                  fontWeight: 590,
+                  color: plan.highlight ? LN.accent : LN.ink3,
+                  marginBottom: 12,
                 }}
               >
-                plan / {plan.name.toLowerCase()}
+                {plan.name}
               </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "baseline",
-                  gap: 4,
-                  marginBottom: 4,
-                }}
-              >
+              <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 4 }}>
                 <span
                   style={{
-                    fontFamily: RK.sans,
-                    fontSize: 36,
-                    fontWeight: 500,
-                    color: RK.ink,
-                    letterSpacing: -1,
+                    fontSize: 38,
+                    fontWeight: 510,
+                    color: LN.ink,
+                    letterSpacing: "-1.2px",
                     lineHeight: 1,
                   }}
                 >
                   {plan.price}
                 </span>
-                <span
-                  style={{
-                    fontFamily: RK.mono,
-                    fontSize: 11,
-                    color: RK.ink3,
-                  }}
-                >
-                  {plan.period}
-                </span>
+                <span style={{ fontSize: 14, color: LN.ink3 }}>{plan.period}</span>
               </div>
-              <p
-                style={{
-                  fontFamily: RK.sans,
-                  fontSize: 13,
-                  color: RK.ink2,
-                  margin: 0,
-                  marginBottom: 22,
-                }}
-              >
-                {plan.description}
-              </p>
+              <p style={{ fontSize: 14, color: LN.ink3, margin: "0 0 22px" }}>{plan.description}</p>
 
               <ul
                 style={{
                   margin: 0,
-                  padding: 0,
+                  padding: "20px 0 0",
                   listStyle: "none",
                   display: "flex",
                   flexDirection: "column",
-                  gap: 10,
+                  gap: 12,
                   marginBottom: 26,
                   flex: 1,
-                  borderTop: `1px solid ${RK.rule2}`,
-                  paddingTop: 18,
+                  borderTop: `1px solid ${LN.rule2}`,
                 }}
               >
                 {plan.features.map((feature) => (
@@ -1159,33 +899,28 @@ function Pricing() {
                       display: "flex",
                       alignItems: "flex-start",
                       gap: 10,
-                      fontFamily: RK.sans,
-                      fontSize: 13,
-                      color: RK.ink,
+                      fontSize: 14,
+                      color: LN.ink2,
                       lineHeight: 1.45,
                     }}
                   >
                     <Check
-                      className="size-3.5"
-                      style={{
-                        marginTop: 3,
-                        flexShrink: 0,
-                        color: plan.highlight ? RK.accent : RK.ok,
-                      }}
+                      className="size-4"
+                      style={{ marginTop: 1, flexShrink: 0, color: plan.highlight ? LN.accent : LN.ok }}
                     />
                     <span>{feature}</span>
                   </li>
                 ))}
               </ul>
 
-              <BracketLink
-                href="/sign-up"
-                accent={plan.highlight}
-                block
-                size="md"
-              >
-                {plan.cta} →
-              </BracketLink>
+              {plan.highlight ? (
+                <PrimaryButton href="/sign-up">
+                  {plan.cta}
+                  <ArrowRight className="size-3.5" />
+                </PrimaryButton>
+              ) : (
+                <GhostButton href="/sign-up">{plan.cta}</GhostButton>
+              )}
             </div>
           ))}
         </div>
@@ -1194,7 +929,7 @@ function Pricing() {
   );
 }
 
-// ─── Final CTA ──────────────────────────────────────────────────────────────
+// ─── Final CTA ───────────────────────────────────────────────────────────────
 
 function FinalCTA() {
   return (
@@ -1203,77 +938,68 @@ function FinalCTA() {
         <div
           style={{
             position: "relative",
-            background: RK.surface,
-            border: `1px solid ${RK.rule}`,
-            borderRadius: 4,
-            padding: "64px 32px",
+            background: LN.surface,
+            border: `1px solid ${LN.rule}`,
+            borderRadius: 16,
+            padding: "72px 32px",
             textAlign: "center",
             overflow: "hidden",
           }}
         >
-          {/* corner brackets */}
-          {([
-            { top: 8, left: 8, borderRight: 0, borderBottom: 0 },
-            { top: 8, right: 8, borderLeft: 0, borderBottom: 0 },
-            { bottom: 8, left: 8, borderRight: 0, borderTop: 0 },
-            { bottom: 8, right: 8, borderLeft: 0, borderTop: 0 },
-          ] as CSSProperties[]).map((style, i) => (
-            <span
-              key={i}
-              aria-hidden
-              style={{
-                position: "absolute",
-                width: 16,
-                height: 16,
-                border: `1px solid ${RK.accent}`,
-                ...style,
-              }}
-            />
-          ))}
-
-          <Kicker tone="accent">// stop typing receipts</Kicker>
-          <h2
-            style={{
-              fontFamily: RK.sans,
-              fontSize: "clamp(28px, 4vw, 40px)",
-              fontWeight: 500,
-              color: RK.ink,
-              letterSpacing: -0.5,
-              lineHeight: 1.1,
-              margin: "16px auto 0",
-              maxWidth: 620,
-            }}
-          >
-            Stop typing receipts into spreadsheets.
-          </h2>
-          <p
-            style={{
-              fontFamily: RK.sans,
-              fontSize: 14.5,
-              color: RK.ink2,
-              margin: "12px auto 0",
-              maxWidth: 480,
-              lineHeight: 1.6,
-            }}
-          >
-            Join hundreds of Malaysian SMEs already saving hours every week.
-          </p>
-
           <div
+            aria-hidden
             style={{
-              marginTop: 28,
-              display: "flex",
-              gap: 10,
-              justifyContent: "center",
-              flexWrap: "wrap",
+              position: "absolute",
+              left: "50%",
+              top: -80,
+              width: 640,
+              height: 320,
+              transform: "translateX(-50%)",
+              background: `radial-gradient(closest-side, ${LN.accentSoft}, transparent 70%)`,
+              pointerEvents: "none",
             }}
-          >
-            <BracketLink href="/sign-up" accent size="md">
-              start scanning — free <ArrowRight className="size-3.5" />
-            </BracketLink>
-            <BracketLink href="#features" size="md">
-              see features
-            </BracketLink>
+          />
+          <div style={{ position: "relative" }}>
+            <Eyebrow>Stop typing receipts</Eyebrow>
+            <h2
+              style={{
+                fontSize: "clamp(28px, 4vw, 44px)",
+                fontWeight: 510,
+                color: LN.ink,
+                letterSpacing: "-0.96px",
+                lineHeight: 1.05,
+                margin: "16px auto 0",
+                maxWidth: 620,
+              }}
+            >
+              Stop typing receipts into spreadsheets.
+            </h2>
+            <p
+              style={{
+                fontSize: 17,
+                color: LN.ink3,
+                margin: "14px auto 0",
+                maxWidth: 480,
+                lineHeight: 1.6,
+              }}
+            >
+              Join hundreds of Malaysian SMEs already saving hours every week.
+            </p>
+            <div
+              style={{
+                marginTop: 32,
+                display: "flex",
+                gap: 12,
+                justifyContent: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              <PrimaryButton href="/sign-up">
+                Start scanning — free
+                <ArrowRight className="size-3.5" />
+              </PrimaryButton>
+              <GhostButton href="#features">See features</GhostButton>
+            </div>
           </div>
         </div>
       </div>
@@ -1281,73 +1007,47 @@ function FinalCTA() {
   );
 }
 
-// ─── Footer ─────────────────────────────────────────────────────────────────
+// ─── Footer ──────────────────────────────────────────────────────────────────
 
 function Footer() {
   return (
-    <footer style={{ borderTop: `1px solid ${RK.rule}`, background: RK.paper2 }}>
-      <div className="mx-auto max-w-6xl" style={{ padding: "32px 24px" }}>
+    <footer style={{ borderTop: `1px solid ${LN.rule2}` }}>
+      <div className="mx-auto max-w-6xl" style={{ padding: "40px 24px" }}>
         <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 24,
-          }}
-          className="sm:flex-row! sm:items-start sm:justify-between"
+          className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between"
         >
           <div>
             <Link
               href="/"
               style={{
-                fontFamily: RK.mono,
-                fontSize: 13,
-                color: RK.ink,
-                fontWeight: 600,
-                letterSpacing: 0.5,
+                fontSize: 16,
+                fontWeight: 590,
+                letterSpacing: "-0.3px",
+                color: LN.ink,
                 textDecoration: "none",
               }}
             >
-              resitly<span style={{ color: RK.accent }}>.</span>
+              resitly<span style={{ color: LN.accent }}>.</span>
             </Link>
-            <p
-              style={{
-                fontFamily: RK.sans,
-                fontSize: 12.5,
-                color: RK.ink2,
-                marginTop: 6,
-                maxWidth: 320,
-                lineHeight: 1.5,
-              }}
-            >
+            <p style={{ fontSize: 14, color: LN.ink3, marginTop: 8, maxWidth: 320, lineHeight: 1.5 }}>
               AI receipt and invoice processing, built for Malaysian SMEs.
             </p>
           </div>
 
-          <nav
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "8px 22px",
-              fontFamily: RK.mono,
-              fontSize: 11,
-              letterSpacing: 0.3,
-            }}
-          >
+          <nav style={{ display: "flex", flexWrap: "wrap", gap: "10px 24px" }}>
             {[
-              { label: "product", href: "#product" },
-              { label: "features", href: "#features" },
-              { label: "pricing", href: "#pricing" },
-              { label: "privacy", href: "/privacy" },
-              { label: "terms", href: "/terms" },
-              { label: "sign in", href: "/sign-in" },
+              { label: "Product", href: "#product" },
+              { label: "Features", href: "#features" },
+              { label: "Pricing", href: "#pricing" },
+              { label: "Privacy", href: "/privacy" },
+              { label: "Terms", href: "/terms" },
+              { label: "Sign in", href: "/sign-in" },
             ].map(({ label, href }) => (
               <Link
                 key={label}
                 href={href}
-                style={{
-                  color: RK.ink2,
-                  textDecoration: "none",
-                }}
+                className="ln-navlink"
+                style={{ fontSize: 14, fontWeight: 510, textDecoration: "none" }}
               >
                 {label}
               </Link>
@@ -1357,181 +1057,133 @@ function Footer() {
 
         <div
           style={{
-            marginTop: 28,
-            paddingTop: 16,
-            borderTop: `1px solid ${RK.rule2}`,
+            marginTop: 32,
+            paddingTop: 20,
+            borderTop: `1px solid ${LN.rule2}`,
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
             flexWrap: "wrap",
             gap: 10,
-            fontFamily: RK.mono,
-            fontSize: 10,
-            color: RK.ink3,
-            letterSpacing: 0.4,
+            fontSize: 13,
+            color: LN.ink3,
           }}
         >
-          <span>© 2026 resitly · all rights reserved</span>
-          <span>build · v2.4 · myr</span>
+          <span>© 2026 Resitly · All rights reserved</span>
+          <span>Made in Malaysia · MYR</span>
         </div>
       </div>
     </footer>
   );
 }
 
-// ─── Page ───────────────────────────────────────────────────────────────────
+// ─── Page ────────────────────────────────────────────────────────────────────
 
 export default function LandingPage() {
   return (
-    <div
-      style={{
-        background: RK.paper,
-        color: RK.ink,
-        minHeight: "100vh",
-        fontFamily: RK.sans,
-      }}
-    >
+    <div style={{ background: LN.bg, color: LN.ink, minHeight: "100vh" }}>
       <Navbar />
 
       {/* Hero */}
-      <section style={{ position: "relative", padding: "96px 24px 0", overflow: "hidden" }}>
+      <section style={{ position: "relative", padding: "112px 24px 0", overflow: "hidden" }}>
         {/* Grid backdrop */}
         <div
           aria-hidden
           style={{
             position: "absolute",
             inset: 0,
-            backgroundImage: `linear-gradient(to right, ${RK.rule2} 1px, transparent 1px), linear-gradient(to bottom, ${RK.rule2} 1px, transparent 1px)`,
-            backgroundSize: "48px 48px",
-            maskImage:
-              "radial-gradient(ellipse at center top, black 0%, transparent 65%)",
-            opacity: 0.6,
+            backgroundImage: `linear-gradient(to right, ${LN.rule2} 1px, transparent 1px), linear-gradient(to bottom, ${LN.rule2} 1px, transparent 1px)`,
+            backgroundSize: "56px 56px",
+            maskImage: "radial-gradient(ellipse at center top, black 0%, transparent 60%)",
+            WebkitMaskImage: "radial-gradient(ellipse at center top, black 0%, transparent 60%)",
+            opacity: 0.5,
             pointerEvents: "none",
           }}
         />
-        {/* Soft accent glow */}
+        {/* Accent glow */}
         <div
           aria-hidden
           style={{
             position: "absolute",
             left: "50%",
-            top: -120,
-            width: 720,
-            height: 360,
+            top: -160,
+            width: 820,
+            height: 420,
             transform: "translateX(-50%)",
-            background: `radial-gradient(closest-side, ${RK.accentSoft}, transparent 70%)`,
+            background: `radial-gradient(closest-side, ${LN.accentSoft}, transparent 70%)`,
             pointerEvents: "none",
-            opacity: 0.7,
           }}
         />
 
-        <div
-          className="mx-auto max-w-4xl"
-          style={{ position: "relative", textAlign: "center" }}
-        >
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "5px 12px",
-              border: `1px solid ${RK.rule}`,
-              background: RK.surface,
-              borderRadius: 999,
-              fontFamily: RK.mono,
-              fontSize: 10.5,
-              color: RK.ink2,
-              letterSpacing: 0.4,
-              marginBottom: 28,
-            }}
-          >
-            <span
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: 999,
-                background: RK.ok,
-              }}
-            />
-            built for malaysian SMEs · 2026
+        <div className="mx-auto max-w-4xl" style={{ position: "relative", textAlign: "center" }}>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 28 }}>
+            <Pill>
+              <span style={{ width: 6, height: 6, borderRadius: 999, background: LN.ok }} />
+              Built for Malaysian SMEs · 2026
+            </Pill>
           </div>
 
           <h1
             style={{
-              fontFamily: RK.sans,
-              fontSize: "clamp(36px, 6vw, 64px)",
-              fontWeight: 500,
-              color: RK.ink,
-              letterSpacing: -1.2,
-              lineHeight: 1.05,
+              fontSize: "clamp(40px, 6.4vw, 68px)",
+              fontWeight: 510,
+              color: LN.ink,
+              letterSpacing: "-2px",
+              lineHeight: 1.02,
               margin: 0,
             }}
           >
             Turn receipts into clean
             <br className="hidden sm:block" />{" "}
-            <span
-              style={{
-                background: `linear-gradient(180deg, ${RK.ink} 65%, ${RK.accent} 100%)`,
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                color: "transparent",
-              }}
-            >
-              financial data in seconds.
-            </span>
+            <span style={{ color: LN.accent }}>financial data in seconds.</span>
           </h1>
 
           <p
             style={{
-              fontFamily: RK.sans,
-              fontSize: 16,
-              color: RK.ink2,
-              maxWidth: 640,
-              margin: "20px auto 0",
+              fontSize: 18,
+              color: LN.ink3,
+              maxWidth: 620,
+              margin: "22px auto 0",
               lineHeight: 1.6,
             }}
           >
-            Snap a photo or upload a file. Resitly extracts, categorises, and organises
-            your expenses automatically — with confidence scores you can trust.
+            Snap a photo or upload a file. Resitly extracts, categorises, and organises your
+            expenses automatically — with confidence scores you can trust.
           </p>
 
           <div
             style={{
               marginTop: 32,
               display: "flex",
-              gap: 10,
+              gap: 12,
               justifyContent: "center",
               flexWrap: "wrap",
             }}
           >
-            <BracketLink href="/sign-up" accent size="md">
-              ＋ scan your first receipt — free
-            </BracketLink>
-            <BracketLink href="#product" size="md">
-              view demo →
-            </BracketLink>
+            <PrimaryButton href="/sign-up">
+              Scan your first receipt — free
+              <ArrowRight className="size-4" />
+            </PrimaryButton>
+            <GhostButton href="#product">View demo</GhostButton>
           </div>
 
-          {/* Tiny trust line */}
           <div
             style={{
               marginTop: 24,
-              fontFamily: RK.mono,
-              fontSize: 10.5,
-              color: RK.ink3,
-              letterSpacing: 0.4,
+              fontSize: 13,
+              color: LN.ink3,
               display: "inline-flex",
-              gap: 14,
+              gap: 18,
               flexWrap: "wrap",
               justifyContent: "center",
             }}
           >
-            <span>· no credit card</span>
-            <span>· 20 free receipts / month</span>
-            <span>· export to CSV</span>
+            <span>No credit card</span>
+            <span>20 free receipts / month</span>
+            <span>Export to CSV</span>
           </div>
 
-          <HeroMockUI />
+          <HeroMock />
         </div>
       </section>
 

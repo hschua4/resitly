@@ -106,26 +106,26 @@
   --chart-4: #7170ff;
   --chart-5: #EF4444;
 
-  /* ── v2 wireframe tokens (RK) — light ───────────────────── */
-  --rk-ink:        oklch(0.22 0.01 60);
-  --rk-ink2:       oklch(0.42 0.01 60);
-  --rk-ink3:       oklch(0.62 0.01 60);
-  --rk-rule:       oklch(0.86 0.005 60);
-  --rk-rule2:      oklch(0.92 0.005 60);
-  --rk-paper:      oklch(0.985 0.003 80);
-  --rk-paper2:     oklch(0.965 0.005 80);
-  --rk-surface:    #ffffff;
-  --rk-hi:         oklch(0.95 0.02 50);
-  --rk-accent:     oklch(0.62 0.14 50);
-  --rk-accent-soft:oklch(0.94 0.04 50);
-  --rk-ok:         oklch(0.6 0.1 150);
-  --rk-ok-soft:    oklch(0.94 0.04 150);
-  --rk-warn:       oklch(0.7 0.13 80);
-  --rk-warn-soft:  oklch(0.95 0.05 80);
-  --rk-err:        oklch(0.58 0.16 25);
-  --rk-err-soft:   oklch(0.95 0.04 25);
-  --rk-mono: 'JetBrains Mono', ui-monospace, monospace;
-  --rk-sans: 'Geist', 'Inter', system-ui, sans-serif;
+  /* ── RK tokens → mapped onto the Linear palette (light) ─── */
+  --rk-paper:       #f7f8f8;  /* page background */
+  --rk-paper2:      #f0f1f3;  /* subtle elevated surface */
+  --rk-surface:     #ffffff;  /* card surface */
+  --rk-hi:          #eceef0;  /* hover / highlight */
+  --rk-ink:         #0f1011;  /* primary text */
+  --rk-ink2:        #51555c;  /* secondary text */
+  --rk-ink3:        #8a8f98;  /* muted / tertiary text */
+  --rk-rule:        #e4e6e9;  /* standard border */
+  --rk-rule2:       #eef0f2;  /* subtle divider */
+  --rk-accent:      #5e6ad2;  /* brand indigo */
+  --rk-accent-soft: rgba(94, 106, 210, 0.10);
+  --rk-ok:          #1f9d3c;
+  --rk-ok-soft:     rgba(39, 166, 68, 0.12);
+  --rk-warn:        #b5710a;
+  --rk-warn-soft:   rgba(245, 158, 11, 0.14);
+  --rk-err:         #dc2626;
+  --rk-err-soft:    rgba(239, 68, 68, 0.10);
+  --rk-mono: 'Berkeley Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --rk-sans: var(--font-sans), 'Inter', system-ui, sans-serif;
 }
 
 /* ─── Dark mode (Linear-native) ──────────────────────────────────────────── */
@@ -178,24 +178,24 @@
   --chart-4: #828fff;
   --chart-5: #EF4444;
 
-  /* ── v2 wireframe tokens (RK) — dark ───────────────────── */
-  --rk-ink:        oklch(0.92 0.01 60);
-  --rk-ink2:       oklch(0.72 0.01 60);
-  --rk-ink3:       oklch(0.52 0.01 60);
-  --rk-rule:       oklch(0.30 0.005 60);
-  --rk-rule2:      oklch(0.24 0.005 60);
-  --rk-paper:      oklch(0.16 0.005 80);
-  --rk-paper2:     oklch(0.20 0.005 80);
-  --rk-surface:    oklch(0.22 0.005 80);
-  --rk-hi:         oklch(0.30 0.02 50);
-  --rk-accent:     oklch(0.72 0.14 50);
-  --rk-accent-soft:oklch(0.30 0.05 50);
-  --rk-ok:         oklch(0.72 0.12 150);
-  --rk-ok-soft:    oklch(0.28 0.05 150);
-  --rk-warn:       oklch(0.78 0.13 80);
-  --rk-warn-soft:  oklch(0.30 0.06 80);
-  --rk-err:        oklch(0.68 0.16 25);
-  --rk-err-soft:   oklch(0.30 0.06 25);
+  /* ── RK tokens → mapped onto the Linear palette (dark) ──── */
+  --rk-paper:       #0f1011;  /* panel dark — page background */
+  --rk-paper2:      #161718;  /* subtle elevated surface */
+  --rk-surface:     #191a1b;  /* level-3 card surface */
+  --rk-hi:          rgba(255, 255, 255, 0.05);  /* hover / highlight */
+  --rk-ink:         #f7f8f8;  /* primary text */
+  --rk-ink2:        #d0d6e0;  /* secondary text (silver) */
+  --rk-ink3:        #8a8f98;  /* muted / tertiary text */
+  --rk-rule:        rgba(255, 255, 255, 0.08);  /* standard border */
+  --rk-rule2:       rgba(255, 255, 255, 0.05);  /* subtle divider */
+  --rk-accent:      #7170ff;  /* accent violet (interactive) */
+  --rk-accent-soft: rgba(113, 112, 255, 0.14);
+  --rk-ok:          #27a644;
+  --rk-ok-soft:     rgba(39, 166, 68, 0.16);
+  --rk-warn:        #f59e0b;
+  --rk-warn-soft:   rgba(245, 158, 11, 0.16);
+  --rk-err:         #ef4444;
+  --rk-err-soft:    rgba(239, 68, 68, 0.16);
 }
 
 @layer base {
@@ -240,5 +240,46 @@
   .rk-btn:disabled {
     opacity: 0.55;
     cursor: not-allowed;
+  }
+
+  /* ── Linear button / link primitives (landing + auth) ─────── */
+  .ln-btn {
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease,
+      box-shadow 120ms ease;
+  }
+  .ln-btn-primary {
+    background: #5e6ad2;
+    color: #ffffff;
+    border: 1px solid transparent;
+  }
+  .ln-btn-primary:not(:disabled):hover {
+    background: #828fff;
+  }
+  .ln-btn-ghost {
+    background: color-mix(in oklab, var(--rk-ink) 2%, transparent);
+    border: 1px solid var(--rk-rule);
+    color: var(--rk-ink);
+  }
+  .ln-btn-ghost:not(:disabled):hover {
+    background: var(--rk-hi);
+    border-color: var(--rk-ink3);
+  }
+  .ln-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .ln-navlink {
+    color: var(--rk-ink2);
+    transition: color 120ms ease, background 120ms ease;
+  }
+  .ln-navlink:hover {
+    color: var(--rk-ink);
+  }
+  .ln-card {
+    transition: background 120ms ease, border-color 120ms ease;
+  }
+  .ln-card-hover:hover {
+    background: var(--rk-hi);
+    border-color: color-mix(in oklab, var(--rk-ink) 14%, transparent);
   }
 }
