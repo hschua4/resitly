@@ -58,8 +58,10 @@ jobs:
 
             docker compose pull
 
-            # Run migrations against a one-shot api container before swap
-            docker compose run --rm api pnpm db:migrate
+            # Run migrations against a one-shot api container before swap.
+            # -T + </dev/null so `run` doesn't consume the rest of this
+            # heredoc from bash's stdin (which would skip the swap below).
+            docker compose run --rm -T api pnpm db:migrate </dev/null
 
             # Rolling swap with healthcheck-aware start-first
             docker compose up -d --remove-orphans
