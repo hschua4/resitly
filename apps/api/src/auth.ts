@@ -27,11 +27,18 @@ export const auth = betterAuth({
     },
   },
   advanced: {
+    // Share the session cookie across the web host (resitly.hschua.com) and
+    // the api host (resitly-api.hschua.com) so the Next proxy running on the
+    // web host can read it. Without this the cookie is host-only on the api
+    // subdomain and the web-host route guard never sees it. Set
+    // COOKIE_DOMAIN=.hschua.com in production.
+    ...(env.COOKIE_DOMAIN
+      ? { crossSubDomainCookies: { enabled: true, domain: env.COOKIE_DOMAIN } }
+      : {}),
     defaultCookieAttributes: {
       sameSite: "lax",
       httpOnly: true,
       secure:   env.NODE_ENV === "production",
-      ...(env.COOKIE_DOMAIN ? { domain: env.COOKIE_DOMAIN } : {}),
     },
   },
 });
