@@ -844,11 +844,26 @@ function Pricing() {
               }}
             >
               {plan.highlight && "badge" in plan && plan.badge && (
-                <div style={{ position: "absolute", top: -11, left: 24 }}>
-                  <Pill tone="accent">
+                <div style={{ position: "absolute", top: -12, left: 24 }}>
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
+                      padding: "3px 10px",
+                      borderRadius: 9999,
+                      background: LN.accent,
+                      color: "#fff",
+                      border: `1px solid ${LN.accent}`,
+                      fontSize: 12,
+                      fontWeight: 590,
+                      lineHeight: 1.5,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
                     <Sparkles className="size-3" />
                     {plan.badge}
-                  </Pill>
+                  </span>
                 </div>
               )}
 
